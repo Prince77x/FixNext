@@ -53,7 +53,7 @@ class Technician(db.Model,UserMixin):
 
 # ================= PROPERTY =================
 
-class Property(db.Model,UserMixin):
+class Property(db.Model):
     __tablename__ = "properties"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -65,7 +65,7 @@ class Property(db.Model,UserMixin):
 
 # ================= UNIT =================
 
-class Unit(db.Model,UserMixin):
+class Unit(db.Model):
     __tablename__ = "units"
 
     id = db.Column(db.Integer, primary_key=True)
