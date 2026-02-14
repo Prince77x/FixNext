@@ -25,7 +25,7 @@ class Tenant(db.Model, UserMixin):
     password_hash = db.Column(db.String(255))
     phone = db.Column(db.String(20))
     is_active = db.Column(db.Boolean, default=True)
-    
+
     tickets = db.relationship("Ticket", back_populates="tenant")
 
 # ================= MANAGER =================
@@ -37,7 +37,7 @@ class Manager(db.Model,UserMixin):
     name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(255))
-
+    is_active = db.Column(db.Boolean, default=True)
 
 # ================= TECHNICIAN =================
 
@@ -49,6 +49,7 @@ class Technician(db.Model,UserMixin):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(255))
     skill = db.Column(db.String(100))
+    is_active = db.Column(db.Boolean, default=True)
 
     assignments = db.relationship("TicketAssignment", back_populates="technician")
 

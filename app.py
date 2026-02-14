@@ -321,6 +321,25 @@ def activate_tenant(tenant_id):
     flash(f'✅ Tenant "{tenant.name}" has been activated!', 'success')
     return redirect(url_for('manage_tenants'))
 
+@app.route('/manager/delete_tenant/<int:tenant_id>', methods=['POST'])
+@login_required
+def delete_tenant(tenant_id):
+    if not isinstance(current_user, Manager):
+        abort(403)
+    
+    tenant = Tenant.query.get_or_404(tenant_id)
+    tenant_name = tenant.name
+    
+    # Delete related tickets first (cascade will handle rest)
+    Ticket.query.filter_by(tenant_id=tenant_id).delete()
+    
+    # Delete tenant
+    db.session.delete(tenant)
+    db.session.commit()
+    
+    flash(f'✅ Tenant "{tenant_name}" and all their tickets have been deleted!', 'success')
+    return redirect(url_for('manage_tenants'))
+
 # tenants route
 @app.route('/tenants/dashboard')
 @login_required

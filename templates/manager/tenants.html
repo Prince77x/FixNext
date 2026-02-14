@@ -243,6 +243,25 @@
                   style="padding: 6px 12px"
                   >Edit</a
                 >
+                <form
+                  method="POST"
+                  action="{{ url_for('delete_tenant', tenant_id=tenant.id) }}"
+                  style="display: inline"
+                  onsubmit="return confirm('Delete {{ tenant.name }}? This is permanent.');"
+                >
+                  <button
+                    type="submit"
+                    class="btn"
+                    style="
+                      background: #ef4444;
+                      padding: 6px 12px;
+                      color: white;
+                      border: none;
+                    "
+                  >
+                    Delete
+                  </button>
+                </form>
                 {% if tenant.is_active %}
                 <form
                   method="POST"
