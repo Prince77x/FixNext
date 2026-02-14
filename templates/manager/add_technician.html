@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Technician</title>
+    <style>body { font-family: system-ui; max-width: 500px; margin: 50px auto; padding: 20px; } input, button { width: 100%; padding: 12px; margin: 10px 0; } button { background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; }</style>
+</head>
+<body>
+    <h1>➕ Add New Technician</h1>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin: 20px 0;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="email@domain.com" required>
+        <input type="text" name="skill" placeholder="Plumbing, Electrical, etc">
+        <input type="password" name="password" placeholder="Password (default: default123)">
+        <button type="submit">Add Technician</button>
+    </form>
+    <a href="{{ url_for('manager_dashboard') }}" style="display: block; text-align: center; margin-top: 20px; color: #3b82f6;">← Back to Dashboard</a>
+</body>
+</html>

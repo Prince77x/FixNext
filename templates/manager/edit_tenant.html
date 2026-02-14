@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Tenant - PropertyFix</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #f8f9fa;
+        color: #333;
+        padding: 20px;
+      }
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #1e40af;
+        margin-bottom: 10px;
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+      .subtitle {
+        color: #666;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 0.95rem;
+      }
+      .tenant-info {
+        background: #f0f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        border-left: 4px solid #3b82f6;
+      }
+      .tenant-id {
+        font-weight: 700;
+        color: #1e40af;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+        font-size: 0.9rem;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
+      .optional {
+        color: #666;
+        font-size: 0.85rem;
+        font-style: italic;
+      }
+      .btn-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+      }
+      .btn {
+        flex: 1;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+      }
+      .btn-secondary {
+        background: #6b7280;
+        color: white;
+      }
+      .btn-secondary:hover {
+        background: #4b5563;
+      }
+      .btn-danger {
+        background: #ef4444;
+        color: white;
+      }
+      .btn-danger:hover {
+        background: #dc2626;
+      }
+      .flash {
+        padding: 15px;
+        margin-bottom: 25px;
+        border-radius: 8px;
+        border-left: 4px solid;
+      }
+      .flash-success {
+        background: #d4edda;
+        color: #155724;
+        border-color: #28a745;
+      }
+      .flash-error {
+        background: #f8d7da;
+        color: #721c24;
+        border-color: #dc3545;
+      }
+      @media (max-width: 480px) {
+        .container {
+          margin: 10px;
+          padding: 25px 20px;
+        }
+        .btn-group {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>✏️ Edit Tenant</h1>
+      <p class="subtitle">Update tenant information</p>
+
+      <!-- Tenant Summary Card -->
+      <div class="tenant-info">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <div class="tenant-id">ID: #{{ tenant.id }}</div>
+            <div style="color: #666">{{ tenant.name }}</div>
+          </div>
+          <span
+            style="
+              background: #dcfce7;
+              color: #059669;
+              padding: 4px 12px;
+              border-radius: 20px;
+              font-size: 0.8rem;
+            "
+          >
+            {{ tenant.tickets|length }} Tickets
+          </span>
+        </div>
+      </div>
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="flash flash-{{ 'success' if category == 'message' else 'error' }}"
+      >
+        {{ message }}
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <form method="POST">
+        <div class="form-group">
+          <label for="name">Full Name *</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value="{{ tenant.name }}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address *</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value="{{ tenant.email }}"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value="{{ tenant.phone or '' }}"
+            placeholder="+91 98765 43210"
+          />
+          <div class="optional">(Optional)</div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">New Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Leave blank to keep current"
+          />
+          <div class="optional">(Leave empty to keep existing password)</div>
+        </div>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+          "
+        >
+          <div class="form-group">
+            <label for="property_id">Property</label>
+            <select id="property_id" name="property_id">
+              <option value="">Select Property</option>
+              <!-- Populate with properties from route -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="unit_number">Unit Number</label>
+            <input
+              type="text"
+              id="unit_number"
+              name="unit_number"
+              placeholder="A-101"
+            />
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <a href="{{ url_for('manage_tenants') }}" class="btn btn-secondary"
+            >← Cancel</a
+          >
+          <button type="submit" class="btn btn-primary">
+            💾 Update Tenant
+          </button>
+          {% if tenant.is_active %}
+          <form
+            method="POST"
+            action="{{ url_for('deactivate_tenant', tenant_id=tenant.id) }}"
+            style="display: inline"
+            onsubmit="return confirm('Deactivate {{ tenant.name }}? They will lose access.');"
+          >
+            <button type="submit" class="btn btn-danger">🚫 Deactivate</button>
+          </form>
+          {% else %}
+          <form
+            method="POST"
+            action="{{ url_for('activate_tenant', tenant_id=tenant.id) }}"
+            style="display: inline"
+          >
+            <button type="submit" class="btn btn-success">✅ Activate</button>
+          </form>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Tenant - PropertyFix</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: #f8f9fa; color: #333; padding: 20px; 
+        }
+        .container { 
+            max-width: 500px; margin: 0 auto; background: white; 
+            padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #1e40af; margin-bottom: 10px; text-align: center;
+            font-size: 1.8rem; font-weight: 700;
+        }
+        .subtitle { 
+            color: #666; text-align: center; margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; margin-bottom: 8px; font-weight: 600; 
+            color: #333; font-size: 0.9rem;
+        }
+        input, select { 
+            width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; 
+            border-radius: 8px; font-size: 1rem; transition: border-color 0.2s;
+        }
+        input:focus, select:focus { 
+            outline: none; border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .btn-group { 
+            display: flex; gap: 15px; margin-top: 30px;
+        }
+        .btn { 
+            flex: 1; padding: 14px 20px; border: none; border-radius: 8px; 
+            font-weight: 600; cursor: pointer; font-size: 1rem;
+            text-decoration: none; text-align: center; transition: all 0.2s;
+        }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-secondary { background: #6b7280; color: white; }
+        .btn-secondary:hover { background: #4b5563; }
+        .flash { 
+            padding: 15px; margin-bottom: 25px; border-radius: 8px; 
+            border-left: 4px solid;
+        }
+        .flash-success { background: #d4edda; color: #155724; border-color: #28a745; }
+        .flash-error { background: #f8d7da; color: #721c24; border-color: #dc3545; }
+        @media (max-width: 480px) {
+            .container { margin: 10px; padding: 25px 20px; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👤 Add New Tenant</h1>
+        <p class="subtitle">Fill in tenant details to onboard new resident</p>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ 'success' if category == 'message' else 'error' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('add_tenant') }}">
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="john.doe@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" name="password" placeholder="Enter secure password" required>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <div class="form-group">
+                    <label for="property">Property</label>
+                    <select id="property" name="property_id">
+                        <option value="">Select Property</option>
+                        {% for property in properties %}
+                            <option value="{{ property.id }}">{{ property.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="unit">Unit Number</label>
+                    <input type="text" id="unit" name="unit_number" placeholder="A-101">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="move_in_date">Move-in Date</label>
+                <input type="date" id="move_in_date" name="move_in_date">
+            </div>
+
+            <div class="btn-group">
+                <a href="{{ url_for('manage_tenants') }}" class="btn btn-secondary">← Cancel</a>
+                <button type="submit" class="btn btn-primary">✅ Add Tenant</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

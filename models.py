@@ -23,7 +23,9 @@ class Tenant(db.Model, UserMixin):
     name = db.Column(db.String(120))
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255))
-
+    phone = db.Column(db.String(20))
+    is_active = db.Column(db.Boolean, default=True)
+    
     tickets = db.relationship("Ticket", back_populates="tenant")
 
 # ================= MANAGER =================
