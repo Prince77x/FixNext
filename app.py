@@ -24,11 +24,37 @@ with app.app_context():
 # user loader
 @loginmanager.user_loader
 def load_user(user_id):
-     return (
-         Manager.query.get(int(user_id)) or
-         Tenant.query.get(int(user_id)) or 
-         Technician.query.get(int(user_id))
-         )
+    """Load user with role-aware IDs to prevent cross-table ID collisions."""
+    if not user_id:
+        return None
+
+    # New format: "<role>:<id>", e.g. "tenant:1"
+    if ":" in user_id:
+        role, raw_id = user_id.split(":", 1)
+        if not raw_id.isdigit():
+            return None
+
+        lookup = {
+            "manager": Manager,
+            "tenant": Tenant,
+            "technician": Technician,
+        }
+        model = lookup.get(role)
+        if not model:
+            return None
+
+        user = db.session.get(model, int(raw_id))
+        return user if user and user.is_active else None
+
+    # Backward compatibility for old sessions that stored only numeric IDs.
+    if user_id.isdigit():
+        raw_id = int(user_id)
+        for model in (Manager, Tenant, Technician):
+            user = db.session.get(model, raw_id)
+            if user and user.is_active:
+                return user
+
+    return None
 
 # home route 
 @app.route('/')
@@ -344,8 +370,9 @@ def delete_tenant(tenant_id):
 @app.route('/tenants/dashboard')
 @login_required
 def tenant_dashboard():
-    if not isinstance(current_user,Tenant):
+    if not isinstance(current_user, Tenant):
         abort(403)
+
     return render_template('./tenants/dashboard.html')
 
 # workers route 

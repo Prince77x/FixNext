@@ -28,6 +28,10 @@ class Tenant(db.Model, UserMixin):
 
     tickets = db.relationship("Ticket", back_populates="tenant")
 
+    def get_id(self):
+        # Include model namespace to avoid ID collisions across user tables.
+        return f"tenant:{self.id}"
+
 # ================= MANAGER =================
 
 class Manager(db.Model,UserMixin):
@@ -38,6 +42,10 @@ class Manager(db.Model,UserMixin):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(255))
     is_active = db.Column(db.Boolean, default=True)
+
+    def get_id(self):
+        # Include model namespace to avoid ID collisions across user tables.
+        return f"manager:{self.id}"
 
 # ================= TECHNICIAN =================
 
@@ -52,6 +60,10 @@ class Technician(db.Model,UserMixin):
     is_active = db.Column(db.Boolean, default=True)
 
     assignments = db.relationship("TicketAssignment", back_populates="technician")
+
+    def get_id(self):
+        # Include model namespace to avoid ID collisions across user tables.
+        return f"technician:{self.id}"
 
 
 # ================= PROPERTY =================
