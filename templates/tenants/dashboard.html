@@ -6,310 +6,17 @@
   <meta name="description" content="PropertyFix tenant dashboard.">
   <title>PropertyFix | Tenant Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/portal.css') }}">
   <style>
-    .tenant-page {
-      padding: 1.2rem 0 2.4rem;
-      background:
-        radial-gradient(circle at 8% 0%, rgba(16, 185, 129, 0.12), transparent 34%),
-        radial-gradient(circle at 92% 0%, rgba(245, 158, 11, 0.12), transparent 30%),
-        #f8fafc;
-      min-height: calc(100vh - 72px);
-    }
-
-    .top-strip {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .top-strip h1 {
-      margin: 0;
-      font-size: clamp(1.5rem, 4.8vw, 2.1rem);
-      line-height: 1.15;
-    }
-
-    .top-strip p {
-      margin: 0.25rem 0 0;
-      color: #64748b;
-      font-size: 0.95rem;
-    }
-
-    .unit-pill {
-      min-height: 36px;
-      display: inline-flex;
-      align-items: center;
-      padding: 0.3rem 0.75rem;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      color: #475569;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .flash {
-      padding: 0.8rem 0.95rem;
-      border-radius: 10px;
-      margin-bottom: 0.8rem;
-      border: 1px solid #a7f3d0;
-      background: #ecfdf5;
-      color: #065f46;
-    }
-
-    .notify-card {
-      border-radius: 14px;
-      border: 1px solid #fde68a;
-      background: #fffbeb;
-      padding: 0.9rem;
-      margin-bottom: 0.95rem;
-    }
-
-    .notify-card h2 {
-      margin: 0;
-      font-size: 1rem;
-      color: #92400e;
-    }
-
-    .notify-card ul {
-      margin: 0.6rem 0 0;
-      padding-left: 1.1rem;
-      display: grid;
-      gap: 0.35rem;
-      color: #78350f;
-      font-size: 0.9rem;
-    }
-
-    .stats-row {
-      display: flex;
-      gap: 0.8rem;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 0.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .stat-card {
-      flex: 0 0 170px;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      border-radius: 16px;
-      padding: 0.9rem;
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-    }
-
-    .stat-label {
-      margin: 0;
-      font-size: 0.86rem;
-      color: #64748b;
-    }
-
-    .stat-value {
-      margin: 0.3rem 0 0;
-      font-size: 1.9rem;
-      line-height: 1;
-      font-weight: 800;
-      color: #1e40af;
-    }
-
-    .stat-value.warn { color: #d97706; }
-    .stat-value.ok { color: #059669; }
-    .stat-value.alert { color: #ef4444; }
-
-    .panel {
-      background: rgba(255, 255, 255, 0.86);
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      border-radius: 16px;
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
-      overflow: hidden;
-    }
-
-    .panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.7rem;
-      flex-wrap: wrap;
-      padding: 0.95rem;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-    }
-
-    .panel-head h2 {
-      margin: 0;
-      font-size: 1.05rem;
-    }
-
-    .filter-form {
-      padding: 0.95rem;
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.65rem;
-    }
-
-    .filter-form select {
-      width: 100%;
-      min-height: 44px;
-      border-radius: 12px;
-      border: 1px solid #cbd5e1;
-      background: #fff;
-      font: inherit;
-      color: #1e293b;
-      padding: 0.65rem;
-    }
-
-    .filter-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.45rem;
-    }
-
-    .tickets-mobile {
-      padding: 0.9rem;
-      display: grid;
-      gap: 0.8rem;
-    }
-
-    .ticket-card {
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      background: #fff;
-      border-radius: 12px;
-      padding: 0.8rem;
-    }
-
-    .ticket-title {
-      color: #1e40af;
-      font-weight: 700;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
-    .ticket-meta {
-      display: grid;
-      gap: 0.35rem;
-      margin: 0.6rem 0 0.55rem;
-      font-size: 0.9rem;
-      color: #475569;
-    }
-
-    .chips {
-      display: flex;
-      gap: 0.45rem;
-      flex-wrap: wrap;
-    }
-
-    .status-chip,
-    .priority-chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 28px;
-      border-radius: 999px;
-      padding: 0.2rem 0.58rem;
-      font-size: 0.76rem;
-      font-weight: 700;
-    }
-
-    .status-open { background: #dbeafe; color: #1e40af; }
-    .status-assigned { background: #fef3c7; color: #b45309; }
-    .status-in_progress { background: #e0f2fe; color: #075985; }
-    .status-done { background: #dcfce7; color: #166534; }
-
-    .priority-low { background: #e2e8f0; color: #334155; }
-    .priority-medium { background: #e0e7ff; color: #3730a3; }
-    .priority-high { background: #fee2e2; color: #b91c1c; }
-    .priority-urgent { background: #ffedd5; color: #c2410c; }
-
-    .tickets-table-wrap {
-      display: none;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 820px;
-      background: #fff;
-    }
-
-    th, td {
-      text-align: left;
-      border-bottom: 1px solid #f1f5f9;
-      padding: 0.78rem;
-      vertical-align: top;
-      font-size: 0.9rem;
-    }
-
-    th {
-      background: #f8fafc;
-      font-size: 0.78rem;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      color: #475569;
-    }
-
-    .empty-card {
-      border: 1px dashed #cbd5e1;
-      border-radius: 12px;
-      padding: 1.1rem;
-      background: #fff;
-      color: #64748b;
-      text-align: center;
-    }
-
-    .mobile-menu-btn {
-      display: none;
-      min-height: 44px;
-      min-width: 44px;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      background: #fff;
-      color: #1e40af;
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-
-    .mobile-mega {
-      display: none;
-      border-top: 1px solid rgba(148, 163, 184, 0.2);
-      background: rgba(248, 250, 252, 0.98);
-      padding: 0.8rem 0;
-    }
-
-    .mobile-mega.is-open { display: block; }
-
-    .mobile-menu-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.55rem;
-    }
-
-    @media (min-width: 640px) {
-      .stats-row { justify-content: space-between; }
-      .stat-card { flex: 1 1 0; }
-      .filter-form { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; }
-    }
-
-    @media (min-width: 980px) {
-      .tickets-mobile { display: none; }
-      .tickets-table-wrap { display: block; }
-      .filter-form { grid-template-columns: repeat(2, minmax(0, 1fr)) auto; }
-    }
-
-    @media (max-width: 860px) {
-      .header-actions { display: none; }
-      .mobile-menu-btn { display: inline-flex; align-items: center; justify-content: center; }
-    }
+    .mobile-menu-btn{display:none;} .mobile-mega{display:none;border-top:1px solid rgba(148,163,184,0.2);background:rgba(248,250,252,0.98);padding:0.8rem 0;} .mobile-mega.is-open{display:block;} .mobile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.55rem;}
+    @media (min-width:640px){ .filter-form{grid-template-columns:1fr auto;align-items:end;} }
+    @media (max-width:860px){ .header-actions{display:none;} .mobile-menu-btn{display:inline-flex;align-items:center;justify-content:center;} }
   </style>
 </head>
 <body>
   <header class="site-header" id="top">
     <div class="container header-inner">
-      <a href="{{ url_for('home') }}" class="logo" aria-label="PropertyFix home">
-        <span class="logo-mark">PF</span>
-        <span>PropertyFix</span>
-      </a>
+      <a href="{{ url_for('home') }}" class="logo" aria-label="PropertyFix home"><span class="logo-mark">PF</span><span>PropertyFix</span></a>
       <nav class="header-actions" aria-label="Tenant navigation">
         <a class="btn btn-outline" href="{{ url_for('home') }}">Home</a>
         <a class="btn btn-outline" href="{{ url_for('tenant_dashboard') }}">My Tickets</a>
@@ -318,156 +25,57 @@
       </nav>
       <button class="mobile-menu-btn" type="button" data-mobile-menu-btn aria-expanded="false" aria-label="Open menu">☰</button>
     </div>
-    <div class="mobile-mega" data-mobile-menu>
-      <div class="container mobile-menu-grid">
-        <a class="btn btn-outline" href="{{ url_for('home') }}">Home</a>
-        <a class="btn btn-outline" href="{{ url_for('tenant_dashboard') }}">My Tickets</a>
-        <a class="btn btn-primary" href="{{ url_for('new_ticket') }}">New Ticket</a>
-        <a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
-      </div>
-    </div>
+    <div class="mobile-mega" data-mobile-menu><div class="container mobile-menu-grid"><a class="btn btn-outline" href="{{ url_for('home') }}">Home</a><a class="btn btn-outline" href="{{ url_for('tenant_dashboard') }}">My Tickets</a><a class="btn btn-primary" href="{{ url_for('new_ticket') }}">New Ticket</a><a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a></div></div>
   </header>
 
-  <main class="tenant-page">
+  <main class="app-page">
     <div class="container">
-      <section class="top-strip">
-        <div>
-          <h1>Tenant Dashboard</h1>
-          <p>Welcome, {{ current_user.name }}. Track your requests and updates in one place.</p>
-        </div>
-        <span class="unit-pill">Unit: {{ stats.unit_number }}</span>
-      </section>
+      <section class="top-strip"><h1>Tenant Dashboard</h1><p>Welcome, {{ current_user.name }}. Track your requests and updates in one place.</p><span class="info-pill">Unit: {{ stats.unit_number }}</span></section>
 
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for message in messages %}
-            <div class="flash">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+      {% with messages = get_flashed_messages() %}{% if messages %}{% for message in messages %}<div class="flash">{{ message }}</div>{% endfor %}{% endif %}{% endwith %}
 
-      {% if notifications %}
-        <section class="notify-card">
-          <h2>Recent Notifications</h2>
-          <ul>
-            {% for note in notifications %}
-              <li>{{ note.message }} ({{ note.created_at.strftime('%d/%m %H:%M') }})</li>
-            {% endfor %}
-          </ul>
-        </section>
-      {% endif %}
+      {% if notifications %}<section class="notify-card"><h2>Recent Notifications</h2><ul>{% for note in notifications %}<li>{{ note.message }} ({{ note.created_at.strftime('%d/%m %H:%M') }})</li>{% endfor %}</ul></section>{% endif %}
 
-      <section class="stats-row" aria-label="Ticket stats">
-        <article class="stat-card">
-          <p class="stat-label">Open</p>
-          <p class="stat-value alert">{{ stats.open_tickets }}</p>
-        </article>
-        <article class="stat-card">
-          <p class="stat-label">In Progress</p>
-          <p class="stat-value warn">{{ stats.in_progress }}</p>
-        </article>
-        <article class="stat-card">
-          <p class="stat-label">Completed</p>
-          <p class="stat-value ok">{{ stats.completed }}</p>
-        </article>
-      </section>
+      <section class="stats-row"><article class="stat-card"><p class="stat-label">Open</p><p class="stat-value alert">{{ stats.open_tickets }}</p></article><article class="stat-card"><p class="stat-label">In Progress</p><p class="stat-value warn">{{ stats.in_progress }}</p></article><article class="stat-card"><p class="stat-label">Completed</p><p class="stat-value ok">{{ stats.completed }}</p></article></section>
 
       <section class="panel">
-        <div class="panel-head">
-          <h2>My Tickets</h2>
-          <span class="unit-pill">{{ tickets|length }} shown</span>
-        </div>
-
-        <form method="GET" class="filter-form">
-          <select name="status" aria-label="Filter by status">
-            <option value="">All Tickets</option>
-            <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
-            <option value="assigned" {% if status_filter == 'assigned' %}selected{% endif %}>Assigned</option>
-            <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
-            <option value="done" {% if status_filter == 'done' %}selected{% endif %}>Done</option>
-          </select>
-          <div class="filter-actions">
-            <button type="submit" class="btn btn-primary">Apply</button>
-            <a href="{{ url_for('tenant_dashboard') }}" class="btn btn-secondary">Clear</a>
-          </div>
-        </form>
+        <div class="panel-head"><h2>My Tickets</h2><span class="info-pill">{{ tickets|length }} shown</span></div>
+        <form method="GET" class="filter-form"><select name="status"><option value="">All Tickets</option><option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option><option value="assigned" {% if status_filter == 'assigned' %}selected{% endif %}>Assigned</option><option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option><option value="done" {% if status_filter == 'done' %}selected{% endif %}>Done</option></select><div class="filter-actions"><button type="submit" class="btn btn-primary">Apply</button><a href="{{ url_for('tenant_dashboard') }}" class="btn btn-secondary">Clear</a></div></form>
 
         {% if tickets %}
           <div class="tickets-mobile">
             {% for ticket in tickets %}
               {% set assignment = ticket.assignments[-1] if ticket.assignments else None %}
               <article class="ticket-card">
-                <a class="ticket-title" href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">
-                  T{{ ticket.id }} • {{ ticket.title[:60] }}{% if ticket.title|length > 60 %}...{% endif %}
-                </a>
-                <div class="ticket-meta">
-                  <span>Unit: {{ ticket.unit.unit_number if ticket.unit else '-' }}</span>
-                  <span>Created: {{ ticket.created_at.strftime('%d/%m %H:%M') }}</span>
-                  <span>Technician: {{ assignment.technician.name if assignment and assignment.technician else '-' }}</span>
-                </div>
-                <div class="chips">
-                  <span class="status-chip status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span>
-                  <span class="priority-chip priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span>
-                </div>
+                <a class="ticket-title" href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">T{{ ticket.id }} • {{ ticket.title[:60] }}{% if ticket.title|length > 60 %}...{% endif %}</a>
+                <div class="ticket-meta"><span>Unit: {{ ticket.unit.unit_number if ticket.unit else '-' }}</span><span>Created: {{ ticket.created_at.strftime('%d/%m %H:%M') }}</span><span>Technician: {{ assignment.technician.name if assignment and assignment.technician else '-' }}</span></div>
+                <div class="chips"><span class="status-chip status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span><span class="priority-chip priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span></div>
               </article>
             {% endfor %}
           </div>
-
           <div class="tickets-table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Title</th>
-                  <th>Status</th>
-                  <th>Priority</th>
-                  <th>Unit</th>
-                  <th>Created</th>
-                  <th>Technician</th>
-                </tr>
-              </thead>
+              <thead><tr><th>ID</th><th>Title</th><th>Status</th><th>Priority</th><th>Unit</th><th>Created</th><th>Technician</th></tr></thead>
               <tbody>
                 {% for ticket in tickets %}
                   {% set assignment = ticket.assignments[-1] if ticket.assignments else None %}
-                  <tr>
-                    <td><strong><a class="ticket-title" href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">T{{ ticket.id }}</a></strong></td>
-                    <td>{{ ticket.title[:50] }}{% if ticket.title|length > 50 %}...{% endif %}</td>
-                    <td><span class="status-chip status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span></td>
-                    <td><span class="priority-chip priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span></td>
-                    <td>{{ ticket.unit.unit_number if ticket.unit else '-' }}</td>
-                    <td>{{ ticket.created_at.strftime('%d/%m %H:%M') }}</td>
-                    <td>{{ assignment.technician.name if assignment and assignment.technician else '-' }}</td>
-                  </tr>
+                  <tr><td><strong><a class="ticket-title" href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">T{{ ticket.id }}</a></strong></td><td>{{ ticket.title[:50] }}{% if ticket.title|length > 50 %}...{% endif %}</td><td><span class="status-chip status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span></td><td><span class="priority-chip priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span></td><td>{{ ticket.unit.unit_number if ticket.unit else '-' }}</td><td>{{ ticket.created_at.strftime('%d/%m %H:%M') }}</td><td>{{ assignment.technician.name if assignment and assignment.technician else '-' }}</td></tr>
                 {% endfor %}
               </tbody>
             </table>
           </div>
         {% else %}
-          <div style="padding:0.95rem;">
-            <div class="empty-card">
-              No tickets yet. <a class="ticket-title" href="{{ url_for('new_ticket') }}">Submit your first maintenance request</a>.
-            </div>
-          </div>
+          <div class="card-body"><div class="empty-card">No tickets yet. <a class="ticket-title" href="{{ url_for('new_ticket') }}">Submit your first maintenance request</a>.</div></div>
         {% endif %}
       </section>
     </div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-bottom">
-      <p>PropertyFix © 2026</p>
-      <div class="footer-links">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a>
-      </div>
-    </div>
-  </footer>
+  <footer class="site-footer"><div class="container footer-bottom"><p>PropertyFix © 2026</p><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a></div></div></footer>
 
   <script>
     const mobileMenuBtn = document.querySelector('[data-mobile-menu-btn]');
     const mobileMenu = document.querySelector('[data-mobile-menu]');
-
     if (mobileMenuBtn && mobileMenu) {
       mobileMenuBtn.addEventListener('click', () => {
         const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';

@@ -6,106 +6,8 @@
   <meta name="description" content="Submit new maintenance request in PropertyFix.">
   <title>PropertyFix | New Maintenance Request</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/portal.css') }}">
   <style>
-    .page {
-      padding: 1.2rem 0 2.4rem;
-      min-height: calc(100vh - 72px);
-      background:
-        radial-gradient(circle at 8% 0%, rgba(16, 185, 129, 0.12), transparent 34%),
-        radial-gradient(circle at 92% 0%, rgba(245, 158, 11, 0.12), transparent 30%),
-        #f8fafc;
-    }
-
-    .shell { width: min(100%, 760px); margin: 0 auto; }
-
-    .top-strip { text-align: center; margin-bottom: 1rem; }
-
-    .top-strip h1 {
-      margin: 0;
-      font-size: clamp(1.5rem, 4.8vw, 2rem);
-      line-height: 1.15;
-    }
-
-    .top-strip p {
-      margin: 0.3rem 0 0;
-      color: #64748b;
-      font-size: 0.95rem;
-    }
-
-    .flash {
-      margin-bottom: 0.9rem;
-      padding: 0.8rem 0.95rem;
-      border-radius: 10px;
-      border: 1px solid #a7f3d0;
-      background: #ecfdf5;
-      color: #065f46;
-      font-size: 0.92rem;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.86);
-      border: 1px solid rgba(148, 163, 184, 0.28);
-      border-radius: 16px;
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
-      overflow: hidden;
-    }
-
-    .card-head {
-      padding: 0.95rem;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-    }
-
-    .card-head h2 {
-      margin: 0;
-      font-size: 1.05rem;
-    }
-
-    .form-grid {
-      padding: 0.95rem;
-      display: grid;
-      gap: 0.8rem;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 0.35rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #334155;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      min-height: 44px;
-      border-radius: 12px;
-      border: 1px solid #cbd5e1;
-      padding: 0.65rem;
-      font: inherit;
-      color: #1e293b;
-      background: #fff;
-    }
-
-    .field textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
-      outline: none;
-      border-color: #1e40af;
-      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
-    }
-
-    .field-note {
-      margin-top: 0.35rem;
-      color: #64748b;
-      font-size: 0.84rem;
-    }
-
     .priority-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -135,13 +37,6 @@
       color: #fff;
       border-color: #1e40af;
     }
-
-    .form-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.1rem;
-    }
   </style>
 </head>
 <body>
@@ -158,8 +53,8 @@
     </div>
   </header>
 
-  <main class="page">
-    <div class="container shell">
+  <main class="app-page">
+    <div class="container shell-md">
       <section class="top-strip">
         <h1>New Maintenance Request</h1>
         <p>Describe the issue and we will route it to the right technician.</p>
