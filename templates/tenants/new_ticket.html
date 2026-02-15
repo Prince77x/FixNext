@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Maintenance Request - PropertyFix</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #1e40af; color: white; padding: 30px; text-align: center; }
+        .content { padding: 40px; }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.95rem; }
+        input, select, textarea { width: 100%; padding: 14px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s; font-family: inherit; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+        textarea { resize: vertical; min-height: 120px; }
+        .priority-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
+        .priority-btn { padding: 14px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.2s; font-weight: 500; }
+        .priority-btn.selected { background: #3b82f6; color: white; border-color: #3b82f6; }
+        .priority-high.selected { background: #ef4444; border-color: #ef4444; }
+        .btn-group { display: flex; gap: 15px; margin-top: 30px; }
+        .btn { flex: 1; padding: 16px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; text-decoration: none; text-align: center; }
+        .btn-primary { background: #10b981; color: white; }
+        .btn-primary:hover { background: #059669; transform: translateY(-2px); }
+        .btn-secondary { background: #6b7280; color: white; }
+        .flash { padding: 15px; margin-bottom: 25px; border-radius: 10px; border-left: 4px solid; }
+        .flash-success { background: #d4edda; color: #155724; border-color: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 New Maintenance Request</h1>
+            <p>Submit a request for repairs or maintenance</p>
+        </div>
+
+        <div class="content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="flash flash-success">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Issue Title *</label>
+                    <input type="text" name="title" placeholder="Leaky faucet in kitchen" required maxlength="200">
+                    <small style="color: #6b7280;">Be specific - helps us prioritize</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Description *</label>
+                    <textarea name="description" placeholder="Describe the problem in detail..." required></textarea>
+                    <small style="color: #6b7280;">Include when it started, what you've tried, etc.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Unit/Apartment</label>
+                    <select name="unit_id">
+                        <option value="">Select a unit (optional)</option>
+                        {% for unit in tenant_units %}
+                            <option value="{{ unit.id }}">{{ unit.unit_number }}{% if unit.property %} - {{ unit.property.name }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Priority Level *</label>
+                    <div class="priority-grid">
+                        <div class="priority-btn" data-priority="low" onclick="selectPriority(this)">🟢 Low (cosmetic)</div>
+                        <div class="priority-btn selected" data-priority="medium" onclick="selectPriority(this)">🟡 Medium (working condition)</div>
+                        <div class="priority-btn" data-priority="high" onclick="selectPriority(this)">🔴 High (affects safety)</div>
+                        <div class="priority-btn" data-priority="urgent" onclick="selectPriority(this)">🚨 Urgent (emergency)</div>
+                    </div>
+                    <input type="hidden" name="priority" id="priority" value="medium">
+                </div>
+
+                <div class="form-group">
+                    <label>Photos (optional)</label>
+                    <input type="file" name="photos" multiple accept="image/*">
+                    <small style="color: #6b7280;">Upload photos to help us understand the issue</small>
+                </div>
+
+                <div class="btn-group">
+                    <a href="{{ url_for('tenant_dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+                    <button type="submit" class="btn btn-primary">✅ Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function selectPriority(btn) {
+            // Remove selected from all
+            document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
+            // Add to clicked
+            btn.classList.add('selected');
+            // Set hidden input
+            document.getElementById('priority').value = btn.dataset.priority;
+        }
+    </script>
+</body>
+</html>

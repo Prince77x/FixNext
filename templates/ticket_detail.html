@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Detail</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #111827; }
+        .container { max-width: 980px; margin: 0 auto; padding: 20px; }
+        .card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 18px; }
+        .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .status { padding: 3px 10px; border-radius: 20px; background: #e2e8f0; }
+        ul { padding-left: 18px; }
+        li { margin-bottom: 8px; }
+        a { color: #2563eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>Ticket T{{ ticket.id }}: {{ ticket.title }}</h2>
+            <p>{{ ticket.description }}</p>
+            <div class="meta">
+                <div><strong>Status:</strong> <span class="status">{{ ticket.status.value.replace('_', ' ').title() }}</span></div>
+                <div><strong>Priority:</strong> {{ ticket.priority.title() }}</div>
+                <div><strong>Tenant:</strong> {{ ticket.tenant.name if ticket.tenant else '-' }}</div>
+                <div><strong>Unit:</strong> {{ ticket.unit.unit_number if ticket.unit else '-' }}</div>
+                <div><strong>Created:</strong> {{ ticket.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Attachments</h3>
+            <ul>
+                {% for file in ticket.attachments %}
+                    <li><a href="{{ url_for('static', filename=file.file_url) }}" target="_blank">Attachment {{ loop.index }}</a></li>
+                {% else %}
+                    <li>No attachments.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>Activity Log</h3>
+            <ul>
+                {% for event in history %}
+                    <li>
+                        <strong>{{ event.timestamp.strftime('%d/%m %H:%M') }}</strong> |
+                        {{ event.actor_role }} #{{ event.actor_id }} |
+                        {{ event.action }}
+                        {% if event.old_value or event.new_value %}
+                            ({{ event.old_value or '-' }} → {{ event.new_value or '-' }})
+                        {% endif %}
+                    </li>
+                {% else %}
+                    <li>No activity yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="javascript:history.back()">← Back</a>
+    </div>
+</body>
+</html>
