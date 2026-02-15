@@ -1,195 +1,749 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manager Dashboard</title>
-    <style>
-        /* Exact same CSS from previous simple version - paste here */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f8f9fa; color: #333; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header { background: white; padding: 20px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 25px; border-radius: 10px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-        .stat-number { font-size: 2.5rem; font-weight: 700; color: #1e40af; }
-        .filters { background: white; padding: 20px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .filters form { display: flex; gap: 15px; flex-wrap: wrap; align-items: end; }
-        select, .btn { padding: 10px 15px; border: 2px solid #e2e8f0; border-radius: 8px; }
-        .btn { background: #3b82f6; color: white; border: none; cursor: pointer; font-weight: 600; text-decoration: none; display: inline-block; text-align: center; }
-        .table-container { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 25px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f5f9; }
-        th { background: #f8fafc; font-weight: 600; }
-        tr:hover { background: #f8fafc; }
-        .status { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 500; }
-        .open { background: #dbeafe; color: #1e40af; }
-        .assigned { background: #fef3c7; color: #d97706; }
-        .priority-high { color: #ef4444; font-weight: 600; }
-        .sidebar { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 280px; }
-        .action-btn { display: block; width: 100%; padding: 15px; margin-bottom: 15px; background: #3b82f6; color: white; text-decoration: none; border-radius: 8px; text-align: center; font-weight: 600; }
-        .flash { padding: 15px; margin-bottom: 20px; border-radius: 8px; }
-        .flash-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .notifications { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 14px; margin-bottom: 20px; }
-        .notifications ul { margin: 10px 0 0 18px; }
-        @media (max-width: 768px) { .header, .filters form { flex-direction: column; } .stats { grid-template-columns: 1fr; } }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="PropertyFix manager dashboard.">
+  <title>PropertyFix | Manager Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .manager-page {
+      padding: 1.2rem 0 2.4rem;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(16, 185, 129, 0.12), transparent 34%),
+        radial-gradient(circle at 92% 0%, rgba(245, 158, 11, 0.12), transparent 30%),
+        #f8fafc;
+      min-height: calc(100vh - 72px);
+    }
+
+    .top-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .top-strip h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4.8vw, 2.2rem);
+      line-height: 1.15;
+    }
+
+    .top-strip p {
+      margin: 0.25rem 0 0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .dashboard-pill {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      color: #475569;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .flash {
+      padding: 0.8rem 0.95rem;
+      border-radius: 10px;
+      margin-bottom: 0.8rem;
+      border: 1px solid #a7f3d0;
+      background: #ecfdf5;
+      color: #065f46;
+    }
+
+    .notify-card {
+      border-radius: 14px;
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      padding: 0.9rem;
+      margin-bottom: 0.95rem;
+    }
+
+    .notify-card h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: #92400e;
+    }
+
+    .notify-card ul {
+      margin: 0.6rem 0 0;
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 0.35rem;
+      color: #78350f;
+      font-size: 0.9rem;
+    }
+
+    .stats-row {
+      display: flex;
+      gap: 0.8rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-card {
+      flex: 0 0 170px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 16px;
+      padding: 0.9rem;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .stat-label {
+      margin: 0;
+      font-size: 0.86rem;
+      color: #64748b;
+    }
+
+    .stat-value {
+      margin: 0.3rem 0 0;
+      font-size: 1.9rem;
+      line-height: 1;
+      font-weight: 800;
+      color: #1e40af;
+    }
+
+    .stat-value.warn { color: #d97706; }
+    .stat-value.ok { color: #059669; }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 16px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      padding: 0.95rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .filter-form {
+      padding: 0.95rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+    }
+
+    .filter-form select {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      font: inherit;
+      color: #1e293b;
+      padding: 0.65rem;
+    }
+
+    .filter-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .quick-actions {
+      padding: 0.95rem;
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .quick-actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .health-card {
+      margin: 0.95rem;
+      margin-top: 0;
+      border-radius: 12px;
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      padding: 0.8rem;
+    }
+
+    .health-card strong {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .health-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      font-size: 0.88rem;
+      color: #475569;
+      margin-top: 0.35rem;
+    }
+
+    .tickets-mobile {
+      padding: 0.9rem;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .ticket-card {
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      background: #fff;
+      border-radius: 12px;
+      padding: 0.8rem;
+    }
+
+    .ticket-meta {
+      display: grid;
+      gap: 0.35rem;
+      margin-bottom: 0.7rem;
+      font-size: 0.9rem;
+      color: #475569;
+    }
+
+    .ticket-title {
+      color: #1e40af;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .chips {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+
+    .status-chip,
+    .priority-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      padding: 0.2rem 0.58rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .status-open { background: #dbeafe; color: #1e40af; }
+    .status-assigned { background: #fef3c7; color: #b45309; }
+    .status-in_progress { background: #e0f2fe; color: #075985; }
+    .status-done { background: #dcfce7; color: #166534; }
+
+    .priority-low { background: #e2e8f0; color: #334155; }
+    .priority-medium { background: #e0e7ff; color: #3730a3; }
+    .priority-high { background: #fee2e2; color: #b91c1c; }
+    .priority-urgent { background: #ffedd5; color: #c2410c; }
+
+    .action-forms {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 0.55rem;
+    }
+
+    .action-forms form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+    }
+
+    .action-forms select {
+      min-height: 38px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 0.45rem;
+      font: inherit;
+      font-size: 0.86rem;
+    }
+
+    .action-forms .btn {
+      min-height: 38px;
+      padding: 0.45rem 0.7rem;
+      font-size: 0.86rem;
+    }
+
+    .tickets-table-wrap {
+      display: none;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+      background: #fff;
+    }
+
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid #f1f5f9;
+      padding: 0.78rem;
+      vertical-align: top;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: #f8fafc;
+      font-size: 0.78rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #475569;
+    }
+
+    .desktop-actions {
+      min-width: 250px;
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .desktop-actions form {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+
+    .desktop-actions form select {
+      min-height: 36px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      padding: 0.4rem;
+      font-size: 0.84rem;
+    }
+
+    .desktop-actions form .btn {
+      min-height: 36px;
+      padding: 0.45rem 0.55rem;
+      font-size: 0.82rem;
+    }
+
+    .site-footer {
+      margin-top: 1.4rem;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      min-height: 44px;
+      min-width: 44px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      background: #fff;
+      color: #1e40af;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .mobile-mega {
+      display: none;
+      border-top: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(248, 250, 252, 0.98);
+      padding: 0.8rem 0;
+    }
+
+    .mobile-mega.is-open {
+      display: block;
+    }
+
+    .mobile-menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+    }
+
+    @media (min-width: 640px) {
+      .stats-row {
+        justify-content: space-between;
+      }
+
+      .stat-card {
+        flex: 1 1 0;
+      }
+
+      .filter-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: end;
+      }
+
+      .action-forms form {
+        grid-template-columns: 1fr auto;
+      }
+    }
+
+    @media (min-width: 980px) {
+      .layout-grid {
+        grid-template-columns: minmax(0, 1fr) 310px;
+      }
+
+      .tickets-mobile {
+        display: none;
+      }
+
+      .tickets-table-wrap {
+        display: block;
+      }
+
+      .filter-form {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .desktop-actions form {
+        grid-template-columns: 1fr auto;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .header-actions {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="flash flash-success">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        {% if notifications %}
-            <div class="notifications">
-                <strong>Recent Notifications</strong>
-                <ul>
-                    {% for note in notifications %}
-                        <li>{{ note.message }} ({{ note.created_at.strftime('%d/%m %H:%M') }})</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-
-        <!-- Header -->
-        <div class="header">
-            <h1>🏠 Manager Dashboard</h1>
-            <div>{{ current_user.name }} | <a href="{{ url_for('logout') }}" style="color: #ef4444;">Logout</a></div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number">{{ stats.open_tickets }}</div>
-                <div>Open Tickets</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" style="color: #f59e0b;">{{ stats.high_priority }}</div>
-                <div>High Priority</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">{{ stats.total_tickets }}</div>
-                <div>Total Tickets</div>
-            </div>
-        </div>
-
-        <!-- Filters -->
-        <div class="filters">
-            <form method="GET">
-                <select name="status">
-                    <option value="">All Status</option>
-                    <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
-                    <option value="assigned" {% if status_filter == 'assigned' %}selected{% endif %}>Assigned</option>
-                    <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
-                    <option value="done" {% if status_filter == 'done' %}selected{% endif %}>Done</option>
-                </select>
-                <select name="priority">
-                    <option value="">All Priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>High</option>
-                    <option value="urgent">Urgent</option>
-                </select>
-                <select name="technician">
-                    <option value="">All Technicians</option>
-                    {% for tech in technicians %}
-                    <option value="{{ tech.id }}" {% if tech_filter == tech.id|string %}selected{% endif %}>{{ tech.name }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit" class="btn">🔍 Filter</button>
-                <a href="{{ url_for('manager_dashboard') }}" class="btn" style="background: #6b7280;">Clear</a>
-                <a href="{{ url_for('export_tickets') }}" class="btn" style="background: #10b981;">📥 Export CSV</a>
-            </form>
-        </div>
-
-        <div style="display: flex; gap: 25px;">
-            <!-- Tickets Table -->
-            <div style="flex: 1;">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Title</th>
-                                <th>Tenant</th>
-                                <th>Unit</th>
-                                <th>Status</th>
-                                <th>Priority</th>
-                                <th>Created</th>
-                                <th>Assigned</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ticket in tickets %}
-                            <tr>
-                                <td><strong>T{{ ticket.id }}</strong></td>
-                                <td>
-                                    <a href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">{{ ticket.title[:50] }}{% if ticket.title|length > 50 %}...{% endif %}</a>
-                                </td>
-                                <td>{{ ticket.tenant.name if ticket.tenant else 'N/A' }}</td>
-                                <td>{{ ticket.unit.unit_number if ticket.unit else 'N/A' }}</td>
-                                <td><span class="status {{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span></td>
-                                <td class="{% if ticket.priority in ['high', 'urgent'] %}priority-high{% endif %}">{{ ticket.priority.title() }}</td>
-                                <td>{{ ticket.created_at.strftime('%d/%m %H:%M') }}</td>
-                                <td>
-                                    {% set latest_assignment = ticket.assignments[-1] if ticket.assignments else None %}
-                                    {% if latest_assignment and latest_assignment.technician %}
-                                        {{ latest_assignment.technician.name }}
-                                    {% else %}
-                                        <span style="color: #666;">Unassigned</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <form method="POST" action="{{ url_for('assign_ticket', ticket_id=ticket.id) }}" style="display: inline-block;">
-                                        <select name="technician_id" style="padding: 5px 8px; margin-right: 5px; min-width: 140px;">
-                                            <option value="">Assign Technician</option>
-                                            {% for tech in technicians %}
-                                            <option value="{{ tech.id }}">{{ tech.name }} ({{ tech.skill }})</option>
-                                            {% endfor %}
-                                        </select>
-                                        <button type="submit" class="btn" style="padding: 8px 12px; font-size: 0.85rem;">Assign</button>
-                                    </form>
-                                    <form method="POST" action="{{ url_for('manager_update_ticket', ticket_id=ticket.id) }}" style="display: inline-block; margin-top: 6px;">
-                                        <select name="status" style="padding: 5px 8px; margin-right: 5px;">
-                                            <option value="">Keep Status</option>
-                                            <option value="assigned">Assigned</option>
-                                            <option value="in_progress">In Progress</option>
-                                            <option value="done">Done</option>
-                                        </select>
-                                        <select name="priority" style="padding: 5px 8px; margin-right: 5px;">
-                                            <option value="">Keep Priority</option>
-                                            <option value="low">Low</option>
-                                            <option value="medium">Medium</option>
-                                            <option value="high">High</option>
-                                            <option value="urgent">Urgent</option>
-                                        </select>
-                                        <button type="submit" class="btn" style="padding: 8px 12px; font-size: 0.85rem; background: #0ea5e9;">Update</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr><td colspan="9" style="text-align: center; padding: 40px; color: #666;">No tickets found</td></tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="sidebar">
-                <h3>⚡ Quick Actions</h3>
-                <a href="{{ url_for('add_technician') }}" class="action-btn">➕ Add Technician</a>
-                <a href="{{ url_for('manage_tenants')}}" class="action-btn">👤 Manage Tenants</a>
-                <a href="#" class="action-btn">📢 Announcements</a>
-                <a href="#" class="action-btn">📊 Reports</a>
-            </div>
-        </div>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="{{ url_for('home') }}" class="logo" aria-label="PropertyFix home">
+        <span class="logo-mark">PF</span>
+        <span>PropertyFix</span>
+      </a>
+      <nav class="header-actions" aria-label="Manager navigation">
+        <a class="btn btn-outline" href="{{ url_for('home') }}">Home</a>
+        <a class="btn btn-outline" href="{{ url_for('manage_tenants') }}">Tenants</a>
+        <a class="btn btn-outline" href="{{ url_for('home') }}#features">About Us</a>
+        <a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
+      </nav>
+      <button class="mobile-menu-btn" type="button" data-mobile-menu-btn aria-expanded="false" aria-label="Open menu">☰</button>
     </div>
+
+    <div class="mobile-mega" data-mobile-menu>
+      <div class="container mobile-menu-grid">
+        <a class="btn btn-outline" href="{{ url_for('home') }}">Home</a>
+        <a class="btn btn-outline" href="{{ url_for('manage_tenants') }}">Tenants</a>
+        <a class="btn btn-outline" href="{{ url_for('home') }}#features">About Us</a>
+        <a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="manager-page">
+    <div class="container">
+      <section class="top-strip">
+        <div>
+          <h1>Manager Dashboard</h1>
+          <p>Welcome, {{ current_user.name }}. Manage and close maintenance requests quickly.</p>
+        </div>
+        <span class="dashboard-pill">Live Ops View</span>
+      </section>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% if notifications %}
+        <section class="notify-card">
+          <h2>Recent Notifications</h2>
+          <ul>
+            {% for note in notifications %}
+              <li>{{ note.message }} ({{ note.created_at.strftime('%d/%m %H:%M') }})</li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endif %}
+
+      <section class="stats-row" aria-label="Ticket stats">
+        <article class="stat-card">
+          <p class="stat-label">Open Tickets</p>
+          <p class="stat-value">{{ stats.open_tickets }}</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">High Priority</p>
+          <p class="stat-value warn">{{ stats.high_priority }}</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">Total Tickets</p>
+          <p class="stat-value">{{ stats.total_tickets }}</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">Technicians</p>
+          <p class="stat-value ok">{{ technicians|length }}</p>
+        </article>
+      </section>
+
+      <section class="layout-grid">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Tickets</h2>
+            <span class="dashboard-pill">{{ tickets|length }} shown</span>
+          </div>
+
+          <form method="GET" class="filter-form">
+            <select name="status" aria-label="Filter by status">
+              <option value="">All Status</option>
+              <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Open</option>
+              <option value="assigned" {% if status_filter == 'assigned' %}selected{% endif %}>Assigned</option>
+              <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+              <option value="done" {% if status_filter == 'done' %}selected{% endif %}>Done</option>
+            </select>
+
+            <select name="priority" aria-label="Filter by priority">
+              <option value="">All Priority</option>
+              <option value="low" {% if priority_filter == 'low' %}selected{% endif %}>Low</option>
+              <option value="medium" {% if priority_filter == 'medium' %}selected{% endif %}>Medium</option>
+              <option value="high" {% if priority_filter == 'high' %}selected{% endif %}>High</option>
+              <option value="urgent" {% if priority_filter == 'urgent' %}selected{% endif %}>Urgent</option>
+            </select>
+
+            <select name="technician" aria-label="Filter by technician">
+              <option value="">All Technicians</option>
+              {% for tech in technicians %}
+                <option value="{{ tech.id }}" {% if tech_filter == tech.id|string %}selected{% endif %}>{{ tech.name }}</option>
+              {% endfor %}
+            </select>
+
+            <div class="filter-actions">
+              <button type="submit" class="btn btn-primary">Apply</button>
+              <a href="{{ url_for('manager_dashboard') }}" class="btn btn-secondary">Clear</a>
+              <a href="{{ url_for('export_tickets') }}" class="btn btn-outline">Export CSV</a>
+            </div>
+          </form>
+
+          <div class="tickets-mobile">
+            {% for ticket in tickets %}
+              <article class="ticket-card">
+                <a class="ticket-title" href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">
+                  T{{ ticket.id }} • {{ ticket.title[:60] }}{% if ticket.title|length > 60 %}...{% endif %}
+                </a>
+
+                <div class="ticket-meta">
+                  <span>Tenant: {{ ticket.tenant.name if ticket.tenant else 'N/A' }}</span>
+                  <span>Unit: {{ ticket.unit.unit_number if ticket.unit else 'N/A' }}</span>
+                  <span>Created: {{ ticket.created_at.strftime('%d/%m %H:%M') }}</span>
+                  {% set latest_assignment = ticket.assignments[-1] if ticket.assignments else None %}
+                  <span>Assigned: {{ latest_assignment.technician.name if latest_assignment and latest_assignment.technician else 'Unassigned' }}</span>
+                </div>
+
+                <div class="chips">
+                  <span class="status-chip status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span>
+                  <span class="priority-chip priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span>
+                </div>
+
+                <div class="action-forms">
+                  <form method="POST" action="{{ url_for('assign_ticket', ticket_id=ticket.id) }}">
+                    <select name="technician_id" aria-label="Assign technician for ticket {{ ticket.id }}">
+                      <option value="">Assign Technician</option>
+                      {% for tech in technicians %}
+                        <option value="{{ tech.id }}">{{ tech.name }} ({{ tech.skill }})</option>
+                      {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">Assign</button>
+                  </form>
+
+                  <form method="POST" action="{{ url_for('manager_update_ticket', ticket_id=ticket.id) }}">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.45rem;">
+                      <select name="status" aria-label="Update status for ticket {{ ticket.id }}">
+                        <option value="">Keep Status</option>
+                        <option value="assigned">Assigned</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="done">Done</option>
+                      </select>
+                      <select name="priority" aria-label="Update priority for ticket {{ ticket.id }}">
+                        <option value="">Keep Priority</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="urgent">Urgent</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-info">Update</button>
+                  </form>
+                </div>
+              </article>
+            {% else %}
+              <article class="ticket-card">No tickets found.</article>
+            {% endfor %}
+          </div>
+
+          <div class="tickets-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Tenant</th>
+                  <th>Unit</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Created</th>
+                  <th>Assigned</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ticket in tickets %}
+                  <tr>
+                    <td><strong>T{{ ticket.id }}</strong></td>
+                    <td>
+                      <a class="ticket-title" href="{{ url_for('ticket_detail', ticket_id=ticket.id) }}">
+                        {{ ticket.title[:50] }}{% if ticket.title|length > 50 %}...{% endif %}
+                      </a>
+                    </td>
+                    <td>{{ ticket.tenant.name if ticket.tenant else 'N/A' }}</td>
+                    <td>{{ ticket.unit.unit_number if ticket.unit else 'N/A' }}</td>
+                    <td><span class="status-chip status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span></td>
+                    <td><span class="priority-chip priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span></td>
+                    <td>{{ ticket.created_at.strftime('%d/%m %H:%M') }}</td>
+                    <td>
+                      {% set latest_assignment = ticket.assignments[-1] if ticket.assignments else None %}
+                      {{ latest_assignment.technician.name if latest_assignment and latest_assignment.technician else 'Unassigned' }}
+                    </td>
+                    <td>
+                      <div class="desktop-actions">
+                        <form method="POST" action="{{ url_for('assign_ticket', ticket_id=ticket.id) }}">
+                          <select name="technician_id" aria-label="Assign technician for ticket {{ ticket.id }}">
+                            <option value="">Assign Technician</option>
+                            {% for tech in technicians %}
+                              <option value="{{ tech.id }}">{{ tech.name }} ({{ tech.skill }})</option>
+                            {% endfor %}
+                          </select>
+                          <button type="submit" class="btn btn-primary">Assign</button>
+                        </form>
+
+                        <form method="POST" action="{{ url_for('manager_update_ticket', ticket_id=ticket.id) }}">
+                          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.35rem;">
+                            <select name="status" aria-label="Update status for ticket {{ ticket.id }}">
+                              <option value="">Keep Status</option>
+                              <option value="assigned">Assigned</option>
+                              <option value="in_progress">In Progress</option>
+                              <option value="done">Done</option>
+                            </select>
+                            <select name="priority" aria-label="Update priority for ticket {{ ticket.id }}">
+                              <option value="">Keep Priority</option>
+                              <option value="low">Low</option>
+                              <option value="medium">Medium</option>
+                              <option value="high">High</option>
+                              <option value="urgent">Urgent</option>
+                            </select>
+                          </div>
+                          <button type="submit" class="btn btn-info">Update</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td colspan="9" style="text-align:center; color:#64748b; padding:2rem;">No tickets found.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="panel">
+          <div class="panel-head">
+            <h2>Quick Actions</h2>
+          </div>
+          <div class="quick-actions">
+            <a href="{{ url_for('add_technician') }}" class="btn btn-primary">Add Technician</a>
+            <a href="{{ url_for('manage_tenants') }}" class="btn btn-outline">Manage Tenants</a>
+            <a href="{{ url_for('export_tickets') }}" class="btn btn-secondary">Download Report</a>
+          </div>
+          <div class="health-card">
+            <strong>Service Health</strong>
+            <div class="health-line"><span>Open / Total</span><span>{{ stats.open_tickets }} / {{ stats.total_tickets }}</span></div>
+            <div class="health-line"><span>Critical</span><span>{{ stats.high_priority }}</span></div>
+            <div class="health-line"><span>Technicians</span><span>{{ technicians|length }}</span></div>
+          </div>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <section class="footer-brand">
+        <a href="{{ url_for('home') }}" class="logo footer-logo" aria-label="PropertyFix home">
+          <span class="logo-mark">PF</span>
+          <span>PropertyFix</span>
+        </a>
+        <p>Helping societies manage maintenance operations with speed and clarity.</p>
+      </section>
+      <section class="footer-group">
+        <button class="footer-group-toggle" type="button">About</button>
+        <ul class="footer-list is-open">
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#how-it-works">How It Works</a></li>
+        </ul>
+      </section>
+      <section class="footer-group">
+        <button class="footer-group-toggle" type="button">Resources</button>
+        <ul class="footer-list is-open">
+          <li><a href="{{ url_for('manage_tenants') }}">Tenant Management</a></li>
+          <li><a href="{{ url_for('export_tickets') }}">Export Reports</a></li>
+        </ul>
+      </section>
+      <section class="footer-group">
+        <button class="footer-group-toggle" type="button">Contact</button>
+        <ul class="footer-list is-open">
+          <li><a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>PropertyFix © 2026</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const mobileMenuBtn = document.querySelector('[data-mobile-menu-btn]');
+    const mobileMenu = document.querySelector('[data-mobile-menu]');
+
+    if (mobileMenuBtn && mobileMenu) {
+      mobileMenuBtn.addEventListener('click', () => {
+        const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+        mobileMenuBtn.setAttribute('aria-expanded', String(!expanded));
+        mobileMenu.classList.toggle('is-open', !expanded);
+      });
+    }
+  </script>
 </body>
 </html>

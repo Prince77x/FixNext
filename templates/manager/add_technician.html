@@ -1,27 +1,198 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add Technician</title>
-    <style>body { font-family: system-ui; max-width: 500px; margin: 50px auto; padding: 20px; } input, button { width: 100%; padding: 12px; margin: 10px 0; } button { background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; }</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Add technician in PropertyFix manager console.">
+  <title>PropertyFix | Add Technician</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .page {
+      padding: 1.2rem 0 2.4rem;
+      min-height: calc(100vh - 72px);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(16, 185, 129, 0.12), transparent 34%),
+        radial-gradient(circle at 92% 0%, rgba(245, 158, 11, 0.12), transparent 30%),
+        #f8fafc;
+    }
+
+    .shell {
+      width: min(100%, 680px);
+      margin: 0 auto;
+    }
+
+    .top-strip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .top-strip h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4.8vw, 2rem);
+      line-height: 1.15;
+    }
+
+    .top-strip p {
+      margin: 0.25rem 0 0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 16px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 0.95rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .flash {
+      margin: 0.9rem 0 0;
+      padding: 0.78rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid #a7f3d0;
+      background: #ecfdf5;
+      color: #065f46;
+      font-size: 0.92rem;
+    }
+
+    .form-grid {
+      padding: 0.95rem;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      padding: 0.65rem;
+      font: inherit;
+      color: #1e293b;
+      background: #fff;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: #1e40af;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
+    }
+
+    .form-note {
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-top: -0.2rem;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+  </style>
 </head>
 <body>
-    <h1>➕ Add New Technician</h1>
-    
-    {% with messages = get_flashed_messages() %}
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="{{ url_for('home') }}" class="logo" aria-label="PropertyFix home">
+        <span class="logo-mark">PF</span>
+        <span>PropertyFix</span>
+      </a>
+      <nav class="header-actions" aria-label="Manager navigation">
+        <a class="btn btn-outline" href="{{ url_for('manager_dashboard') }}">Dashboard</a>
+        <a class="btn btn-outline" href="{{ url_for('manage_tenants') }}">Tenants</a>
+        <a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container shell">
+      <section class="top-strip">
+        <div>
+          <h1>Add Technician</h1>
+          <p>Create a new technician profile for assignments.</p>
+        </div>
+        <a href="{{ url_for('manager_dashboard') }}" class="btn btn-outline">Back to Dashboard</a>
+      </section>
+
+      {% with messages = get_flashed_messages() %}
         {% if messages %}
-            {% for message in messages %}
-                <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin: 20px 0;">{{ message }}</div>
-            {% endfor %}
+          {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+          {% endfor %}
         {% endif %}
-    {% endwith %}
-    
-    <form method="POST">
-        <input type="text" name="name" placeholder="Full Name" required>
-        <input type="email" name="email" placeholder="email@domain.com" required>
-        <input type="text" name="skill" placeholder="Plumbing, Electrical, etc">
-        <input type="password" name="password" placeholder="Password (default: default123)">
-        <button type="submit">Add Technician</button>
-    </form>
-    <a href="{{ url_for('manager_dashboard') }}" style="display: block; text-align: center; margin-top: 20px; color: #3b82f6;">← Back to Dashboard</a>
+      {% endwith %}
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Technician Details</h2>
+        </div>
+
+        <form method="POST" class="form-grid">
+          <div class="field">
+            <label for="name">Full Name</label>
+            <input id="name" type="text" name="name" placeholder="John Carter" required>
+          </div>
+
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input id="email" type="email" name="email" placeholder="tech@propertyfix.com" required>
+          </div>
+
+          <div class="field">
+            <label for="skill">Skill</label>
+            <input id="skill" type="text" name="skill" placeholder="Plumbing, Electrical, HVAC">
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="Optional (default: default123)">
+            <p class="form-note">If left empty, `default123` will be used.</p>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Add Technician</button>
+            <a href="{{ url_for('manager_dashboard') }}" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <p>PropertyFix © 2026</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

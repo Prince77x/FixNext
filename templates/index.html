@@ -1,284 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="PropertyFix helps tenants, technicians, and managers handle maintenance requests faster.">
+  <title>PropertyFix | Maintenance Made Simple</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-<script src="{{ url_for('static', filename='JavaScript/index.js') }}"></script>
 <body>
-    <nav class="navbar">
-  <div class="logo">Building</div>
-
-  <div class="nav-links">
-    <a href="#" class="active">Home</a>
-    <a href="#">Our Home Models</a>
-    <a href="#">Who We Are</a>
-    <a href="#">What We Do & Why</a>
-    <a href="#">FAQs</a>
-    <a href="{{url_for('login')}}"><button>LogIn</button></a>
-  </div>
-
-  <button class="contact-btn">Contact us</button>
-
-  <button class="mobile-menu-btn">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
-</nav>
-
-<div class="mobile-menu">
-  <a href="#" class="active">Home</a>
-  <a href="#">Our Home Models</a>
-  <a href="#">Who We Are</a>
-  <a href="#">What We Do & Why</a>
-  <a href="#">FAQs</a>
-  <button class="contact-btn">Contact us</button>
-</div>
-
-<main class="hero">
-  <div class="hero-content">
-    <h1>✨ We Build Very Modern and Stylish Building
-      <span class="thumbnail">
-        <img src="https://housely.com/wp-content/uploads/2016/09/Luxurious-yellow-themed-bedroom.jpg" alt="Modern interior thumbnail">
-      </span>
-    </h1>
-    <div class="cta-container">
-      <button class="booking-btn">
-        Booking a consultant
-      </button>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="#top" class="logo" aria-label="PropertyFix home">
+        <span class="logo-mark">PF</span>
+        <span>PropertyFix</span>
+      </a>
+      <nav class="header-actions" aria-label="Primary actions">
+        <a class="btn btn-secondary" href="{{ url_for('login') }}">Login</a>
+        <a class="btn btn-outline" href="#how-it-works">Demo</a>
+      </nav>
     </div>
-  </div>
+  </header>
 
-  <div class="hero-image">
-    <div class="circular-image">
-      <img src="https://housely.com/wp-content/uploads/2016/09/Luxurious-yellow-themed-bedroom.jpg" alt="Modern interior">
-    </div>
-  </div>
-</main>
-<section class="difference-section">
-  <div class="features-header">
-    <span class="features-label">WHAT IS DIFFERENT</span>
-    <h2 class="features-title">
-      <span class="decorative-dash">~</span>
-      What makes us different
-      <span class="decorative-dash">~</span>
-    </h2>
-  </div>
-
-  <div class="carousel">
-    <div class="carousel-track">
-      <div class="carousel-item">
-        <div class="circle orange">
-          <div class="icon wavy"></div>
-        </div>
-        <div class="description">
-          <h2>Similar visual appearance across all print?</h2>
-          <p>The other hand we denounce with righteous indignation and dislike beguiled pleasure...</p>
-        </div>
-        <div class="circle yellow">
-          <svg viewBox="0 0 24 24" class="icon">
-            <path d="M12 3l4 7h-8l4-7z"></path>
-            <path d="M12 21l-4-7h8l-4 7z"></path>
-          </svg>
-        </div>
-      </div>
-      <div class="carousel-item">
-        <div class="circle yellow">
-          <div class="icon star"></div>
-        </div>
-        <div class="description">
-          <h2>Does our design make a difference?</h2>
-          <p>The joys of our design simplify your life with a touch of beauty...</p>
-        </div>
-        <div class="circle pink">
-          <div class="feature-icon pink">
-            <svg viewBox="0 0 24 24" class="icon">
-              <path d="M3 6c2 0 4 2 6 2s4-2 6-2 4 2 6 2"></path>
-              <path d="M3 12c2 0 4 2 6 2s4-2 6-2 4 2 6 2"></path>
-              <path d="M3 18c2 0 4 2 6 2s4-2 6-2 4 2 6 2"></path>
-            </svg>
+  <main>
+    <section class="hero" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">🚧 PropertyFix</p>
+          <h1>Maintenance Made Simple</h1>
+          <p class="hero-subtext">
+            One system for tenants, technicians, and managers to report issues, assign work,
+            and close tickets quickly across apartment complexes.
+          </p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="{{ url_for('login') }}" data-loading-target>Get Started Free</a>
+            <a class="btn btn-secondary" href="#how-it-works">Watch Demo</a>
           </div>
+          <ul class="trust-signals" aria-label="Trust signals">
+            <li>✅ Used by 500+ properties</li>
+            <li>✅ 24/7 support</li>
+            <li>✅ Free 14-day trial</li>
+            <li>✅ No credit card needed</li>
+          </ul>
         </div>
-      </div>
-      <div class="carousel-item">
-        <div class="circle orange">
-          <div class="icon wavy"></div>
-        </div>
-        <div class="description">
-          <h2>Innovation at its peak!</h2>
-          <p>We combine creativity with practicality to deliver unique results...</p>
-        </div>
-        <div class="circle yellow">
-          <svg viewBox="0 0 24 24" class="icon">
-            <path d="M12 3l4 7h-8l4-7z"></path>
-            <path d="M12 21l-4-7h8l-4 7z"></path>
-          </svg>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="navigation">
-    <button class="nav-btn prev">&larr;</button>
-    <button class="nav-btn next">&rarr;</button>
-  </div>
-</section>
-<section class="constr-services">
-  <div class="features-header">
-    <span class="features-label">NEED TO KNOW</span>
-    <h2 class="features-title">
-      <span class="decorative-dash">~</span>
-      Our Services
-      <span class="decorative-dash">~</span>
-    </h2>
-  </div>
 
-  <div class="constr-grid">
-    <div class="constr-card">
-      <div class="constr-blob constr-blob-1"></div>
-      <div class="constr-content">
-        <h3>General Contracting</h3>
-        <p>General contracting refers to a construction a single contractor.</p>
-      </div>
-    </div>
-
-    <div class="constr-card">
-      <div class="constr-blob constr-blob-2"></div>
-      <div class="constr-content">
-        <h3>Special Projects</h3>
-        <p>broad term that can refer to unique or non-routine</p>
-      </div>
-    </div>
-
-    <div class="constr-card">
-      <div class="constr-blob constr-blob-3"></div>
-      <div class="constr-content">
-        <h3>House Renovation</h3>
-        <p>House renovation, alsoas home renovation or remodeling</p>
-      </div>
-    </div>
-  </div>
-</section>
-<section>
-  <div class="features-header">
-    <span class="features-label">SEE</span>
-    <h2 class="features-title">
-      <span class="decorative-dash">~</span>
-      Our Projects
-      <span class="decorative-dash">~</span>
-    </h2>
-  </div>
-  <div class="hero-section">
-    <div class="hero-container">
-      <div class="hero-slide active">
-        <div class="one">
-          <div class="oneImg">
-
-          </div>
-          <div class="oneTxt">
-            <h2>1304<br /> Carolyn Way</h2>
-            <div>
-              <div>
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 8V3H3V9L5 12V21M7 3V5M11 3V5M10 16L14.4237 11.9784C14.8038 11.6329 14.9938 11.4601 15.2091 11.3947C15.3988 11.337 15.6012 11.337 15.7909 11.3947C16.0062 11.4601 16.1962 11.6329 16.5763 11.9784L21 16M12 14.1818V19.4C12 19.9601 12 20.2401 12.109 20.454C12.2049 20.6422 12.3578 20.7951 12.546 20.891C12.7599 21 13.0399 21 13.6 21H17.4C17.9601 21 18.2401 21 18.454 20.891C18.6422 20.7951 18.7951 20.6422 18.891 20.454C19 20.2401 19 19.9601 19 19.4V14.1818M11 9H7" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                House Type<br>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="phone-mockup glass">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <p class="screen-title">Tenant Request</p>
+              <div class="ticket-card">
+                <strong>Leaky faucet</strong>
+                <span>Unit 3B • Medium</span>
               </div>
-              <div>
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.9928 6.6967L17.1747 3.51472L20.3567 6.6967L19.2961 7.75736L17.9247 6.38604L17.9247 17.614L19.2961 16.2426L20.3567 17.3033L17.1747 20.4853L13.9928 17.3033L15.0534 16.2426L16.4247 17.614V6.38604L15.0534 7.75736L13.9928 6.6967Z" fill="#080341" />
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 4.5L4.5 3.75H12L12.75 4.5V19.5L12 20.25H4.5L3.75 19.5V4.5ZM5.25 5.25V18.75H11.25V17.25H8.25V15.75H11.25V14.25H8.25V12.75H11.25V11.25H7.5V9.75H11.25V8.25H8.25V6.75H11.25V5.25H5.25Z" fill="#080341" />
-                </svg>
-                2890 sqft
+              <div class="progress-row">
+                <span>Assigned</span>
+                <span class="status-chip">In Progress</span>
               </div>
+              <div class="progress-bar"><span></span></div>
+              <p class="eta">Technician arriving in 45 min</p>
             </div>
           </div>
         </div>
-        <div class="two">
-          <div class="oneImg twoImg">
+      </div>
+    </section>
 
-          </div>
-          <div class="twoTxt">
-            <h2>2376<br />
-              Kimridge Rd</h2>
-            <div class="ab">
-              <div>
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 8V3H3V9L5 12V21M7 3V5M11 3V5M10 16L14.4237 11.9784C14.8038 11.6329 14.9938 11.4601 15.2091 11.3947C15.3988 11.337 15.6012 11.337 15.7909 11.3947C16.0062 11.4601 16.1962 11.6329 16.5763 11.9784L21 16M12 14.1818V19.4C12 19.9601 12 20.2401 12.109 20.454C12.2049 20.6422 12.3578 20.7951 12.546 20.891C12.7599 21 13.0399 21 13.6 21H17.4C17.9601 21 18.2401 21 18.454 20.891C18.6422 20.7951 18.7951 20.6422 18.891 20.454C19 20.2401 19 19.9601 19 19.4V14.1818M11 9H7" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                House Type<br>
-              </div>
-              <div>
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.9928 6.6967L17.1747 3.51472L20.3567 6.6967L19.2961 7.75736L17.9247 6.38604L17.9247 17.614L19.2961 16.2426L20.3567 17.3033L17.1747 20.4853L13.9928 17.3033L15.0534 16.2426L16.4247 17.614V6.38604L15.0534 7.75736L13.9928 6.6967Z" fill="#080341" />
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 4.5L4.5 3.75H12L12.75 4.5V19.5L12 20.25H4.5L3.75 19.5V4.5ZM5.25 5.25V18.75H11.25V17.25H8.25V15.75H11.25V14.25H8.25V12.75H11.25V11.25H7.5V9.75H11.25V8.25H8.25V6.75H11.25V5.25H5.25Z" fill="#080341" />
-                </svg>
-                2890 sqft
-              </div>
-            </div>
-          </div>
+    <section class="section" id="features">
+      <div class="container">
+        <h2>Smart Society Features</h2>
+        <p class="section-subtext">Tap a category to explore how PropertyFix improves daily life in your society.</p>
+        <div class="role-filters" aria-label="Role filters">
+          <button type="button" class="role-filter is-active" data-role-filter="all">All</button>
+          <button type="button" class="role-filter" data-role-filter="community">Community</button>
+          <button type="button" class="role-filter" data-role-filter="security">Security</button>
+          <button type="button" class="role-filter" data-role-filter="facilities">Facilities</button>
         </div>
-        <div class="three">
-          <div class="threeTxt">
-            <h2>9376<br />
-              Kimridge</h2>
-            <div class="ab">
-              <div>
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 8V3H3V9L5 12V21M7 3V5M11 3V5M10 16L14.4237 11.9784C14.8038 11.6329 14.9938 11.4601 15.2091 11.3947C15.3988 11.337 15.6012 11.337 15.7909 11.3947C16.0062 11.4601 16.1962 11.6329 16.5763 11.9784L21 16M12 14.1818V19.4C12 19.9601 12 20.2401 12.109 20.454C12.2049 20.6422 12.3578 20.7951 12.546 20.891C12.7599 21 13.0399 21 13.6 21H17.4C17.9601 21 18.2401 21 18.454 20.891C18.6422 20.7951 18.7951 20.6422 18.891 20.454C19 20.2401 19 19.9601 19 19.4V14.1818M11 9H7" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                House Type<br>
-              </div>
-              <div>
-                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M13.9928 6.6967L17.1747 3.51472L20.3567 6.6967L19.2961 7.75736L17.9247 6.38604L17.9247 17.614L19.2961 16.2426L20.3567 17.3033L17.1747 20.4853L13.9928 17.3033L15.0534 16.2426L16.4247 17.614V6.38604L15.0534 7.75736L13.9928 6.6967Z" fill="#080341" />
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 4.5L4.5 3.75H12L12.75 4.5V19.5L12 20.25H4.5L3.75 19.5V4.5ZM5.25 5.25V18.75H11.25V17.25H8.25V15.75H11.25V14.25H8.25V12.75H11.25V11.25H7.5V9.75H11.25V8.25H8.25V6.75H11.25V5.25H5.25Z" fill="#080341" />
-                </svg>
-                2890 sqft
-              </div>
+        <div class="showcase-grid">
+          <article class="showcase-card glass" data-role-card="community">
+            <img
+              src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=900&q=80"
+              alt="Modern apartment society with shared community spaces"
+              loading="lazy"
+              decoding="async"
+            >
+            <div class="showcase-content">
+              <h3>Resident Community Experience</h3>
+              <p>Keep common-area issues resolved quickly and maintain a clean, comfortable society.</p>
             </div>
-          </div>
-          <div class="oneImg twoImg threeImg">
-          </div>
+          </article>
+
+          <article class="showcase-card glass" data-role-card="security">
+            <img
+              src="https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=900&q=80"
+              alt="Secure residential entrance and managed access"
+              loading="lazy"
+              decoding="async"
+            >
+            <div class="showcase-content">
+              <h3>Safer Gated Operations</h3>
+              <p>Track critical repairs in lifts, entry gates, and safety systems with clear priorities.</p>
+            </div>
+          </article>
+
+          <article class="showcase-card glass" data-role-card="facilities">
+            <img
+              src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80"
+              alt="Apartment facilities like gym and shared amenities"
+              loading="lazy"
+              decoding="async"
+            >
+            <div class="showcase-content">
+              <h3>Better Facility Upkeep</h3>
+              <p>Manage recurring upkeep for gyms, parking, water systems, and shared infrastructure.</p>
+            </div>
+          </article>
         </div>
       </div>
-      <div class="hero-slide">
-        <h1>Explore the Second Slide</h1>
-        <p>This is the second division.</p>
+    </section>
+
+    <section class="section section-alt" id="how-it-works">
+      <div class="container">
+        <h2>How It Works</h2>
+        <div class="steps-grid">
+          <article class="step-card">
+            <span class="step-number">1</span>
+            <h3>Tenant submits issue</h3>
+            <p>Residents report maintenance problems with details and photos in under two minutes.</p>
+          </article>
+
+          <article class="step-card">
+            <span class="step-number">2</span>
+            <h3>Manager assigns ticket</h3>
+            <p>Managers triage priority, assign technicians, and track all open work in one dashboard.</p>
+          </article>
+
+          <article class="step-card">
+            <span class="step-number">3</span>
+            <h3>Technician resolves fast</h3>
+            <p>Technicians update status in real time so everyone sees progress until completion.</p>
+          </article>
+        </div>
       </div>
-      <div class="hero-slide">
-        <h1>Discover the Third Slide</h1>
-        <p>This is the third division.</p>
+    </section>
+
+    <section class="section cta" id="cta">
+      <div class="container cta-inner">
+        <h2>Ready to fix things faster?</h2>
+        <a class="btn btn-primary" href="{{ url_for('login') }}" data-loading-target>Start Free Trial</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <section class="footer-brand">
+        <a href="#top" class="logo footer-logo" aria-label="PropertyFix home">
+          <span class="logo-mark">PF</span>
+          <span>PropertyFix</span>
+        </a>
+        <p>
+          PropertyFix helps apartment societies manage maintenance, facilities,
+          and day-to-day operations with clarity.
+        </p>
+        <div class="footer-social">
+          <a href="#" aria-label="PropertyFix on LinkedIn">LinkedIn</a>
+          <a href="#" aria-label="PropertyFix on X">X</a>
+          <a href="#" aria-label="PropertyFix on YouTube">YouTube</a>
+        </div>
+      </section>
+
+      <section class="footer-group" data-footer-group>
+        <button class="footer-group-toggle" type="button" data-footer-toggle aria-expanded="false">
+          About
+        </button>
+        <ul class="footer-list" data-footer-list>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Society Partners</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press Kit</a></li>
+        </ul>
+      </section>
+
+      <section class="footer-group" data-footer-group>
+        <button class="footer-group-toggle" type="button" data-footer-toggle aria-expanded="false">
+          Features
+        </button>
+        <ul class="footer-list" data-footer-list>
+          <li><a href="#">Complaint Tracking</a></li>
+          <li><a href="#">Facility Upkeep</a></li>
+          <li><a href="#">Vendor Management</a></li>
+          <li><a href="#">Monthly Reports</a></li>
+        </ul>
+      </section>
+
+      <section class="footer-group" data-footer-group>
+        <button class="footer-group-toggle" type="button" data-footer-toggle aria-expanded="false">
+          Resources
+        </button>
+        <ul class="footer-list" data-footer-list>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Status</a></li>
+        </ul>
+      </section>
+
+      <section class="footer-group footer-newsletter">
+        <h3>Get Product Updates</h3>
+        <p>Monthly tips for smoother society operations.</p>
+        <form class="newsletter-form" onsubmit="return false;">
+          <label for="footer-email" class="sr-only">Email address</label>
+          <input id="footer-email" type="email" placeholder="you@example.com" required>
+          <button type="submit" class="btn btn-primary" data-newsletter-submit>Subscribe</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>PropertyFix © 2026</p>
+      <div class="footer-links">
+        <a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a>
+        <a href="tel:+18005550100">+1 (800) 555-0100</a>
       </div>
     </div>
-    <button id="next-btn">></button>
-  </div>
-</section>
-<section class="info-section">
-  <div class="info-header">
-    <div class="background-shape"></div>
-    <h2>Information About Us</h2>
-    <p>Join our team and work with us</p>
-  </div>
-  <div class="info-stats">
-    <div class="stat">
-      <h3 class="stat-number" data-target="230">0</h3>
-      <p>Complete projects</p>
-    </div>
-    <div class="stat">
-      <h3 class="stat-number" data-target="24">0</h3>
-      <p>Locations</p>
-    </div>
-    <div class="stat">
-      <h3 class="stat-number" data-target="500">0</h3>
-      <p>Satisfied clients</p>
-    </div>
-  </div>
-</section>
-<footer class="footer">
-  Made with ❤️ by Nitish
-</footer>
+  </footer>
+
+  <script>
+    document.querySelectorAll('[data-loading-target]').forEach((btn) => {
+      btn.addEventListener('click', function () {
+        this.classList.add('is-loading');
+      });
+    });
+
+    const roleButtons = document.querySelectorAll('[data-role-filter]');
+    const roleCards = document.querySelectorAll('[data-role-card]');
+
+    roleButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const targetRole = button.dataset.roleFilter;
+        roleButtons.forEach((item) => item.classList.remove('is-active'));
+        button.classList.add('is-active');
+
+        roleCards.forEach((card) => {
+          const role = card.dataset.roleCard;
+          const shouldShow = targetRole === 'all' || role === targetRole;
+          card.classList.toggle('is-hidden', !shouldShow);
+        });
+      });
+    });
+
+    const footerGroups = document.querySelectorAll('[data-footer-group]');
+    footerGroups.forEach((group) => {
+      const toggle = group.querySelector('[data-footer-toggle]');
+      const list = group.querySelector('[data-footer-list]');
+      if (!toggle || !list) return;
+
+      toggle.addEventListener('click', () => {
+        const expanded = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        list.classList.toggle('is-open', !expanded);
+      });
+    });
+
+    const newsletterBtn = document.querySelector('[data-newsletter-submit]');
+    if (newsletterBtn) {
+      newsletterBtn.addEventListener('click', function () {
+        this.classList.add('is-loading');
+        this.textContent = 'Subscribed';
+      });
+    }
+  </script>
 </body>
 </html>

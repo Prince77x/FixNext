@@ -1,38 +1,186 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>login</title>
-  </head>
-  <body>
-    <form action="/login" method="POST">
-    <h2>Login form</h2>
-      <p>
-        <label for="email">Email:</label><br />
-        <input
-          type="email"
-          id="email"
-          name="email"
-          placeholder="tenant@building.com"
-          required
-        />
-      </p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Login to PropertyFix.">
+  <title>PropertyFix | Login</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .login-page {
+      min-height: calc(100vh - 72px);
+      display: grid;
+      align-items: center;
+      padding: 1.4rem 0 2.4rem;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(16, 185, 129, 0.12), transparent 45%),
+        radial-gradient(circle at 88% 6%, rgba(245, 158, 11, 0.14), transparent 38%),
+        linear-gradient(155deg, rgba(30, 64, 175, 0.1), rgba(109, 40, 217, 0.08));
+    }
 
-      <p>
-        <label for="password">Password:</label><br />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Enter your password"
-          required
-        />
-      </p>
+    .login-card {
+      width: min(100%, 460px);
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 18px;
+      box-shadow: 0 14px 30px rgba(30, 41, 59, 0.12);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+    }
 
-      <p>
-        <button type="submit">Log In</button>
-      </p>
-    </form>
-  </body>
+    .login-card-head {
+      padding: 1.2rem 1.1rem 0.7rem;
+    }
+
+    .login-card-head h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      line-height: 1.2;
+    }
+
+    .flash {
+      margin: 0.8rem 1.1rem 0;
+      padding: 0.75rem 0.85rem;
+      border-radius: 10px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      font-size: 0.93rem;
+    }
+
+    .login-form {
+      padding: 1rem 1.1rem 1.2rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 48px;
+      padding: 0.75rem 0.85rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font: inherit;
+      background: #fff;
+      color: #0f172a;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: #1e40af;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
+    }
+
+    .password-wrap {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 0.45rem;
+      transform: translateY(-50%);
+      min-height: 36px;
+      border: none;
+      border-radius: 8px;
+      padding: 0.3rem 0.55rem;
+      background: #e2e8f0;
+      color: #1e293b;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .footer-simple {
+      margin-top: 0.4rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="{{ url_for('home') }}" class="logo" aria-label="PropertyFix home">
+        <span class="logo-mark">PF</span>
+        <span>PropertyFix</span>
+      </a>
+      <nav class="header-actions" aria-label="Main navigation">
+        <a class="btn btn-outline" href="{{ url_for('home') }}">Home</a>
+        <a class="btn btn-secondary" href="#login-card">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="login-page">
+    <div class="container">
+      <section class="login-card" id="login-card">
+        <div class="login-card-head">
+          <h1>Log In</h1>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="flash">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form class="login-form" action="{{ url_for('login') }}" method="POST">
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@propertyfix.com" required>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="password-wrap">
+              <input type="password" id="password" name="password" placeholder="Enter your password" required>
+              <button type="button" class="toggle-password" data-toggle-password>Show</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" data-loading-target>Log In</button>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer footer-simple">
+    <div class="container footer-bottom">
+      <p>PropertyFix © 2026</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('[data-loading-target]').forEach((btn) => {
+      btn.addEventListener('click', function () {
+        this.classList.add('is-loading');
+      });
+    });
+
+    const togglePasswordBtn = document.querySelector('[data-toggle-password]');
+    const passwordInput = document.getElementById('password');
+    if (togglePasswordBtn && passwordInput) {
+      togglePasswordBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.getAttribute('type') === 'password';
+        passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+        togglePasswordBtn.textContent = isPassword ? 'Hide' : 'Show';
+      });
+    }
+  </script>
+</body>
 </html>

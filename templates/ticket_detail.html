@@ -1,65 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Detail</title>
-    <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #111827; }
-        .container { max-width: 980px; margin: 0 auto; padding: 20px; }
-        .card { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 18px; }
-        .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
-        .status { padding: 3px 10px; border-radius: 20px; background: #e2e8f0; }
-        ul { padding-left: 18px; }
-        li { margin-bottom: 8px; }
-        a { color: #2563eb; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Ticket detail view in PropertyFix.">
+  <title>PropertyFix | Ticket Detail</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .page {
+      padding: 1.2rem 0 2.4rem;
+      min-height: calc(100vh - 72px);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(16, 185, 129, 0.12), transparent 34%),
+        radial-gradient(circle at 92% 0%, rgba(245, 158, 11, 0.12), transparent 30%),
+        #f8fafc;
+    }
+
+    .top-strip { text-align: center; margin-bottom: 1rem; }
+
+    .top-strip h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 4.8vw, 2rem);
+      line-height: 1.15;
+    }
+
+    .top-strip p {
+      margin: 0.3rem 0 0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .stack {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 16px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 0.95rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .card-head h2,
+    .card-head h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .card-body {
+      padding: 0.95rem;
+    }
+
+    .ticket-title {
+      margin: 0 0 0.35rem;
+      font-size: 1.2rem;
+      line-height: 1.25;
+      color: #1e293b;
+    }
+
+    .description {
+      margin: 0 0 0.8rem;
+      color: #475569;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+    }
+
+    .meta-item {
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    .status-chip,
+    .priority-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      border-radius: 999px;
+      padding: 0.2rem 0.58rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .status-open { background: #dbeafe; color: #1e40af; }
+    .status-assigned { background: #fef3c7; color: #b45309; }
+    .status-in_progress { background: #e0f2fe; color: #075985; }
+    .status-done { background: #dcfce7; color: #166534; }
+
+    .priority-low { background: #e2e8f0; color: #334155; }
+    .priority-medium { background: #e0e7ff; color: #3730a3; }
+    .priority-high { background: #fee2e2; color: #b91c1c; }
+    .priority-urgent { background: #ffedd5; color: #c2410c; }
+
+    .list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .list li {
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 10px;
+      padding: 0.65rem;
+      background: #fff;
+      font-size: 0.9rem;
+      color: #334155;
+    }
+
+    .list a {
+      color: #1e40af;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      font-weight: 600;
+    }
+
+    .back-row {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 0.4rem;
+    }
+
+    @media (min-width: 760px) {
+      .meta-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card">
-            <h2>Ticket T{{ ticket.id }}: {{ ticket.title }}</h2>
-            <p>{{ ticket.description }}</p>
-            <div class="meta">
-                <div><strong>Status:</strong> <span class="status">{{ ticket.status.value.replace('_', ' ').title() }}</span></div>
-                <div><strong>Priority:</strong> {{ ticket.priority.title() }}</div>
-                <div><strong>Tenant:</strong> {{ ticket.tenant.name if ticket.tenant else '-' }}</div>
-                <div><strong>Unit:</strong> {{ ticket.unit.unit_number if ticket.unit else '-' }}</div>
-                <div><strong>Created:</strong> {{ ticket.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>Attachments</h3>
-            <ul>
-                {% for file in ticket.attachments %}
-                    <li><a href="{{ url_for('static', filename=file.file_url) }}" target="_blank">Attachment {{ loop.index }}</a></li>
-                {% else %}
-                    <li>No attachments.</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <div class="card">
-            <h3>Activity Log</h3>
-            <ul>
-                {% for event in history %}
-                    <li>
-                        <strong>{{ event.timestamp.strftime('%d/%m %H:%M') }}</strong> |
-                        {{ event.actor_role }} #{{ event.actor_id }} |
-                        {{ event.action }}
-                        {% if event.old_value or event.new_value %}
-                            ({{ event.old_value or '-' }} → {{ event.new_value or '-' }})
-                        {% endif %}
-                    </li>
-                {% else %}
-                    <li>No activity yet.</li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <a href="javascript:history.back()">← Back</a>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="{{ url_for('home') }}" class="logo" aria-label="PropertyFix home">
+        <span class="logo-mark">PF</span>
+        <span>PropertyFix</span>
+      </a>
+      <nav class="header-actions" aria-label="Navigation">
+        <a class="btn btn-outline" href="{{ url_for('home') }}">Home</a>
+        <a class="btn btn-secondary" href="javascript:history.back()">Back</a>
+      </nav>
     </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <section class="top-strip">
+        <h1>Ticket Detail</h1>
+        <p>Track the full activity and status of this maintenance request.</p>
+      </section>
+
+      <div class="stack">
+        <section class="card">
+          <div class="card-head">
+            <h2>Ticket T{{ ticket.id }}</h2>
+          </div>
+          <div class="card-body">
+            <p class="ticket-title">{{ ticket.title }}</p>
+            <p class="description">{{ ticket.description }}</p>
+            <div class="meta-grid">
+              <div class="meta-item"><strong>Status:</strong> <span class="status-chip status-{{ ticket.status.value }}">{{ ticket.status.value.replace('_', ' ').title() }}</span></div>
+              <div class="meta-item"><strong>Priority:</strong> <span class="priority-chip priority-{{ ticket.priority }}">{{ ticket.priority.title() }}</span></div>
+              <div class="meta-item"><strong>Tenant:</strong> {{ ticket.tenant.name if ticket.tenant else '-' }}</div>
+              <div class="meta-item"><strong>Unit:</strong> {{ ticket.unit.unit_number if ticket.unit else '-' }}</div>
+              <div class="meta-item"><strong>Created:</strong> {{ ticket.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h3>Attachments</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list">
+              {% for file in ticket.attachments %}
+                <li><a href="{{ url_for('static', filename=file.file_url) }}" target="_blank">Attachment {{ loop.index }}</a></li>
+              {% else %}
+                <li>No attachments.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h3>Activity Log</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list">
+              {% for event in history %}
+                <li>
+                  <strong>{{ event.timestamp.strftime('%d/%m %H:%M') }}</strong> |
+                  {{ event.actor_role }} #{{ event.actor_id }} |
+                  {{ event.action }}
+                  {% if event.old_value or event.new_value %}
+                    ({{ event.old_value or '-' }} → {{ event.new_value or '-' }})
+                  {% endif %}
+                </li>
+              {% else %}
+                <li>No activity yet.</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </section>
+
+        <div class="back-row">
+          <a class="btn btn-outline" href="javascript:history.back()">Back</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <p>PropertyFix © 2026</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

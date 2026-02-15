@@ -1,107 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Maintenance Request - PropertyFix</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: #1e40af; color: white; padding: 30px; text-align: center; }
-        .content { padding: 40px; }
-        .form-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.95rem; }
-        input, select, textarea { width: 100%; padding: 14px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem; transition: all 0.2s; font-family: inherit; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-        textarea { resize: vertical; min-height: 120px; }
-        .priority-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
-        .priority-btn { padding: 14px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center; cursor: pointer; transition: all 0.2s; font-weight: 500; }
-        .priority-btn.selected { background: #3b82f6; color: white; border-color: #3b82f6; }
-        .priority-high.selected { background: #ef4444; border-color: #ef4444; }
-        .btn-group { display: flex; gap: 15px; margin-top: 30px; }
-        .btn { flex: 1; padding: 16px 24px; border: none; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; text-decoration: none; text-align: center; }
-        .btn-primary { background: #10b981; color: white; }
-        .btn-primary:hover { background: #059669; transform: translateY(-2px); }
-        .btn-secondary { background: #6b7280; color: white; }
-        .flash { padding: 15px; margin-bottom: 25px; border-radius: 10px; border-left: 4px solid; }
-        .flash-success { background: #d4edda; color: #155724; border-color: #10b981; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Submit new maintenance request in PropertyFix.">
+  <title>PropertyFix | New Maintenance Request</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .page {
+      padding: 1.2rem 0 2.4rem;
+      min-height: calc(100vh - 72px);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(16, 185, 129, 0.12), transparent 34%),
+        radial-gradient(circle at 92% 0%, rgba(245, 158, 11, 0.12), transparent 30%),
+        #f8fafc;
+    }
+
+    .shell { width: min(100%, 760px); margin: 0 auto; }
+
+    .top-strip { text-align: center; margin-bottom: 1rem; }
+
+    .top-strip h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 4.8vw, 2rem);
+      line-height: 1.15;
+    }
+
+    .top-strip p {
+      margin: 0.3rem 0 0;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .flash {
+      margin-bottom: 0.9rem;
+      padding: 0.8rem 0.95rem;
+      border-radius: 10px;
+      border: 1px solid #a7f3d0;
+      background: #ecfdf5;
+      color: #065f46;
+      font-size: 0.92rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 16px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 0.95rem;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .form-grid {
+      padding: 0.95rem;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 0.35rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      padding: 0.65rem;
+      font: inherit;
+      color: #1e293b;
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      outline: none;
+      border-color: #1e40af;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.12);
+    }
+
+    .field-note {
+      margin-top: 0.35rem;
+      color: #64748b;
+      font-size: 0.84rem;
+    }
+
+    .priority-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+    }
+
+    .priority-btn {
+      min-height: 44px;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #334155;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.55rem;
+      text-align: center;
+      transition: transform 0.16s ease, border-color 0.16s ease;
+    }
+
+    .priority-btn:hover {
+      transform: scale(1.01);
+      border-color: #1e40af;
+    }
+
+    .priority-btn.selected {
+      background: #1e40af;
+      color: #fff;
+      border-color: #1e40af;
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.1rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🔧 New Maintenance Request</h1>
-            <p>Submit a request for repairs or maintenance</p>
-        </div>
-
-        <div class="content">
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="flash flash-success">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <form method="POST" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label>Issue Title *</label>
-                    <input type="text" name="title" placeholder="Leaky faucet in kitchen" required maxlength="200">
-                    <small style="color: #6b7280;">Be specific - helps us prioritize</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Description *</label>
-                    <textarea name="description" placeholder="Describe the problem in detail..." required></textarea>
-                    <small style="color: #6b7280;">Include when it started, what you've tried, etc.</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Unit/Apartment</label>
-                    <select name="unit_id">
-                        <option value="">Select a unit (optional)</option>
-                        {% for unit in tenant_units %}
-                            <option value="{{ unit.id }}">{{ unit.unit_number }}{% if unit.property %} - {{ unit.property.name }}{% endif %}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Priority Level *</label>
-                    <div class="priority-grid">
-                        <div class="priority-btn" data-priority="low" onclick="selectPriority(this)">🟢 Low (cosmetic)</div>
-                        <div class="priority-btn selected" data-priority="medium" onclick="selectPriority(this)">🟡 Medium (working condition)</div>
-                        <div class="priority-btn" data-priority="high" onclick="selectPriority(this)">🔴 High (affects safety)</div>
-                        <div class="priority-btn" data-priority="urgent" onclick="selectPriority(this)">🚨 Urgent (emergency)</div>
-                    </div>
-                    <input type="hidden" name="priority" id="priority" value="medium">
-                </div>
-
-                <div class="form-group">
-                    <label>Photos (optional)</label>
-                    <input type="file" name="photos" multiple accept="image/*">
-                    <small style="color: #6b7280;">Upload photos to help us understand the issue</small>
-                </div>
-
-                <div class="btn-group">
-                    <a href="{{ url_for('tenant_dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
-                    <button type="submit" class="btn btn-primary">✅ Submit Request</button>
-                </div>
-            </form>
-        </div>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="{{ url_for('home') }}" class="logo" aria-label="PropertyFix home">
+        <span class="logo-mark">PF</span>
+        <span>PropertyFix</span>
+      </a>
+      <nav class="header-actions" aria-label="Tenant navigation">
+        <a class="btn btn-outline" href="{{ url_for('tenant_dashboard') }}">My Tickets</a>
+        <a class="btn btn-secondary" href="{{ url_for('logout') }}">Logout</a>
+      </nav>
     </div>
+  </header>
 
-    <script>
-        function selectPriority(btn) {
-            // Remove selected from all
-            document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
-            // Add to clicked
-            btn.classList.add('selected');
-            // Set hidden input
-            document.getElementById('priority').value = btn.dataset.priority;
-        }
-    </script>
+  <main class="page">
+    <div class="container shell">
+      <section class="top-strip">
+        <h1>New Maintenance Request</h1>
+        <p>Describe the issue and we will route it to the right technician.</p>
+      </section>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="flash">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Request Details</h2>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" class="form-grid">
+          <div class="field">
+            <label for="title">Issue Title</label>
+            <input id="title" type="text" name="title" placeholder="Leaky faucet in kitchen" required maxlength="200">
+            <p class="field-note">Be specific to help prioritization.</p>
+          </div>
+
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Describe the problem in detail..." required></textarea>
+            <p class="field-note">Include when it started and anything already tried.</p>
+          </div>
+
+          <div class="field">
+            <label for="unit_id">Unit / Apartment</label>
+            <select id="unit_id" name="unit_id">
+              <option value="">Select a unit (optional)</option>
+              {% for unit in tenant_units %}
+                <option value="{{ unit.id }}">{{ unit.unit_number }}{% if unit.property %} - {{ unit.property.name }}{% endif %}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Priority Level</label>
+            <div class="priority-grid">
+              <button type="button" class="priority-btn" data-priority="low">Low</button>
+              <button type="button" class="priority-btn selected" data-priority="medium">Medium</button>
+              <button type="button" class="priority-btn" data-priority="high">High</button>
+              <button type="button" class="priority-btn" data-priority="urgent">Urgent</button>
+            </div>
+            <input type="hidden" name="priority" id="priority" value="medium">
+          </div>
+
+          <div class="field">
+            <label for="photos">Photos (optional)</label>
+            <input id="photos" type="file" name="photos" multiple accept="image/*">
+            <p class="field-note">Upload photos to help us understand the issue faster.</p>
+          </div>
+
+          <div class="form-actions">
+            <a href="{{ url_for('tenant_dashboard') }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-bottom">
+      <p>PropertyFix © 2026</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="mailto:hello@propertyfix.com">hello@propertyfix.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const priorityButtons = document.querySelectorAll('.priority-btn');
+    const priorityInput = document.getElementById('priority');
+
+    priorityButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        priorityButtons.forEach((item) => item.classList.remove('selected'));
+        btn.classList.add('selected');
+        priorityInput.value = btn.dataset.priority;
+      });
+    });
+  </script>
 </body>
 </html>
