@@ -7,11 +7,21 @@ from flask_migrate import Migrate
 from models import db, Manager, Technician, Tenant
 from routes import register_routes
 
+
+def _normalize_database_url(database_url: str) -> str:
+    """Normalize provider URLs for SQLAlchemy."""
+    if database_url.startswith('postgres://'):
+        return database_url.replace('postgres://', 'postgresql://', 1)
+    return database_url
+
+
 app = Flask(__name__, static_folder='statics', static_url_path='/statics')
 
 # app configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'FixNext'
+database_url = os.getenv('DATABASE_URL') or os.getenv('SQLALCHEMY_DATABASE_URI') or 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = _normalize_database_url(database_url)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'FixNext')
 app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'statics', 'uploads')
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -65,4 +75,8 @@ register_routes(app)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(
+        host='0.0.0.0',
+        port=int(os.getenv('PORT', '5000')),
+        debug=os.getenv('FLASK_DEBUG', '0') == '1',
+    )
